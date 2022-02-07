@@ -21,6 +21,7 @@ class MainState : public State {
         objs.PlayAnimation("idle");
         objs.framerate = 1;
         title.scale.y = 0;
+
         title.center.x = WINDOW_WIDTH/2;
         title.center.y = WINDOW_HEIGHT/2;
     }
