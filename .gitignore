@@ -1,0 +1,12 @@
+.vscode/
+build/
+lib/x64/*.lib
+lib/x64/*.a
+lib/x64/*.dll
+lib/x64/*.txt
+lib/x86/*.lib
+lib/x86/*.a
+lib/x86/*.dll
+lib/x86/*.txt
+bin/*.exe
+bin/*.dll
