@@ -33,6 +33,7 @@ class MainState : public State {
         objs.y = objs.y + yvel*2;
 
         title.scale.y = sin(elaped);
+        title.scale.x = cos(elaped);
 
         title.centerSelf();
 
