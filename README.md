@@ -21,6 +21,7 @@ Currently, it only supports MSVC, but you could probably tweak CMakeLists.txt to
 MingW, or GCC.
 
 ## Requirements
+- CMake, to build the damn thing
 - SDL2, SDL_image 2.0, and SDL_ttf 2.0, duh
 - BASS and BASS_fx
 - A VC++ (MSVC) compiler that atleast supports C++ std 17
