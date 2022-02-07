@@ -20,6 +20,11 @@ Stuff like:
 Currently, it only supports MSVC, but you could probably tweak CMakeLists.txt to be able to use
 MingW, or GCC.
 
+## Requirements
+- SDL2, SDL_image 2.0, and SDL_ttf 2.0, duh
+- BASS and BASS_fx
+- A VC++ (MSVC) compiler that atleast supports C++ std 17
+
 To use it (in windows atleast),
 
 - Get SDL2, SDL_image 2.0, and SDL_ttf 2.0, and put em on the respective x86 and x64 folders.
