@@ -10,13 +10,16 @@ using namespace std;
 using namespace Render;
 
 class MainState : public State {
-    Object objs;
+    AnimatedObject objs;
     Object title;
     virtual void Create() {
         title.create(0, 0, "data/bg.png");
         AddObject(&title);
         objs.create(50, 50, "data/smile.png");
         AddObject(&objs);
+        objs.AddAnimation("idle", {{0, 0, 50, 50}, {50, 0, 50, 50}});
+        objs.PlayAnimation("idle");
+        objs.framerate = 1;
         title.scale.y = 0;
         title.center.x = WINDOW_WIDTH/2;
         title.center.y = WINDOW_HEIGHT/2;

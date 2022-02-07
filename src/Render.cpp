@@ -59,6 +59,11 @@ void Render::Object::create(int x, int y, string path){
     _ori_h = h_;
 }
 
+void Render::AnimatedObject::create(int x, int y, string path){
+    Render::Object::create(x,y,path);
+    startTime = SDL_GetTicks();
+}
+
 void Render::State::AddObject(Render::Object* object) {
     object->id = obj.size();
     this->obj.push_back(object);
@@ -77,6 +82,33 @@ void Render::Object::Draw(float dt) {
     _sc_w = _w-cam_rect.w;
     _h = h*scale.y;
     _sc_h = _h-cam_rect.h;
+}
+
+void Render::AnimatedObject::Draw(float dt) {
+    Render::Object::Draw(dt);
+
+    if (current_framename != "") {
+        int frameToDraw = ((SDL_GetTicks() - startTime) * framerate / 1000) % frameRects[current_framename].size();
+        current_frame = frameToDraw;
+
+        int sx = frameRects[current_framename][current_frame].x;
+        int sy = frameRects[current_framename][current_frame].y;
+        int sw = frameRects[current_framename][current_frame].w;
+        int sh = frameRects[current_framename][current_frame].h;
+
+        _sc_w = frameRects[current_framename][current_frame].w;
+        _sc_h = frameRects[current_framename][current_frame].h;
+
+        src_rect = {sx, sy, sw, sh};
+    }
+}
+
+void Render::AnimatedObject::AddAnimation(string anim_name, vector<SDL_Rect> points) {
+    frameRects.insert({anim_name, points});
+}
+
+void Render::AnimatedObject::PlayAnimation(string anim_name) {
+    current_framename = anim_name;
 }
 
 void Render::Object::centerSelf(AXIS axis) {
@@ -162,7 +194,7 @@ bool Render::Update() {
 
         lastUpdate = current;
         
-        current_state->Draw();
+        current_state->Draw(dT);
 
         int end = SDL_GetPerformanceCounter();
 
