@@ -114,6 +114,40 @@ void Render::AnimatedObject::PlayAnimation(string anim_name) {
     current_framename = anim_name;
 }
 
+void Render::TextObject::create(int x, int y, string text, string font_name) {
+    Render::Object::create(x,y,"data/smile.png"); // dummy
+
+    font = TTF_OpenFont(font_name.c_str(), 25);
+
+    SDL_Surface* temp = TTF_RenderText_Solid(font, text.c_str(), {255, 255, 255, 255});
+
+    this->text = text;
+
+    this->_tex = SDL_CreateTextureFromSurface(renderer, temp);
+    SDL_FreeSurface(temp);
+    int w_, h_;
+    SDL_QueryTexture(this->_tex, NULL, NULL, &w_, &h_);
+    _sc_w = w_;
+    _sc_h = h_;
+    this->x = x;
+    this->y = y;
+    w = w_;
+    h = h_;
+}
+
+void Render::TextObject::changeText(string text) {
+    SDL_Surface* temp = TTF_RenderText_Solid(font, text.c_str(), {255, 255, 255, 255});
+    this->text = text;
+    this->_tex = SDL_CreateTextureFromSurface(renderer, temp);
+    SDL_FreeSurface(temp);
+    int w_, h_;
+    SDL_QueryTexture(this->_tex, NULL, NULL, &w_, &h_);
+    _sc_w = w_;
+    _sc_h = h_;
+    w = w_;
+    h = h_;
+}
+
 void Render::Object::centerSelf(AXIS axis) {
     switch (axis) {
         case X:

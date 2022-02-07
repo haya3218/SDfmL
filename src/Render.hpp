@@ -7,6 +7,7 @@
 #include <string>
 #include <windows.h>
 #include "SDL2/SDL.h"
+#include "SDL2/SDL_ttf.h"
 #include "BASS/audio_out.h"
 
 using namespace std;
@@ -47,7 +48,7 @@ namespace Render {
             /*
             * Create a new Object instance.
             */
-            void create(int x = 0, int y = 0, string path = "");
+            virtual void create(int x = 0, int y = 0, string path = "");
 
             virtual void Draw(float dt);
 
@@ -84,7 +85,7 @@ namespace Render {
             /*
             * Create a new AnimatedObject instance.
             */
-            void create(int x = 0, int y = 0, string path = "");
+            virtual void create(int x = 0, int y = 0, string path = "");
             /*
             * Add an animation to said object. Uses SDL_Rects for frames.
             */
@@ -102,6 +103,22 @@ namespace Render {
 
         private:
             int startTime;
+    };
+
+    class TextObject : public Object {
+        public:
+            /*
+            * Create a new TextObject instance.
+            */
+            virtual void create(int x = 0, int y = 0, string text = "", string font_name = "data/monogram.ttf");
+            /*
+            * Change current text. !! TO AVOID MEMORY LEAKS, DO NOT RUN THIS EVERY FRAME! !!
+            */
+            virtual void changeText(string text = "");
+
+            TTF_Font* font;
+        private:
+            string text = "";
     };
 
     /*

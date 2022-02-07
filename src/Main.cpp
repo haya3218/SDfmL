@@ -11,6 +11,7 @@ using namespace Render;
 
 class MainState : public State {
     AnimatedObject objs;
+    TextObject text;
     Object title;
     virtual void Create() {
         title.create(0, 0, "data/bg.png");
@@ -24,6 +25,11 @@ class MainState : public State {
 
         title.center.x = WINDOW_WIDTH/2;
         title.center.y = WINDOW_HEIGHT/2;
+
+        text.create(50, 480 - 100, "funny");
+        text.scale.x = 2;
+        text.scale.y = 2;
+        AddObject(&text);
     }
     int yvel = 0;
     int xvel = 0;
@@ -46,7 +52,7 @@ class MainState : public State {
 };
 
 int main() {
-    Init("lmfao");
+    Init("SDLflixel :)))))");
 
     MainState m;
 
