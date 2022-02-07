@@ -88,6 +88,7 @@ void Render::AnimatedObject::Draw(float dt) {
     Render::Object::Draw(dt);
 
     if (current_framename != "") {
+        // this will make it so that current_frame will only advance when it needs to
         int frameToDraw = ((SDL_GetTicks() - startTime) * framerate / 1000) % frameRects[current_framename].size();
         current_frame = frameToDraw;
 
@@ -96,9 +97,11 @@ void Render::AnimatedObject::Draw(float dt) {
         int sw = frameRects[current_framename][current_frame].w;
         int sh = frameRects[current_framename][current_frame].h;
 
-        _sc_w = frameRects[current_framename][current_frame].w;
-        _sc_h = frameRects[current_framename][current_frame].h;
+        // support scaling :)
+        _sc_w = frameRects[current_framename][current_frame].w*scale.x;
+        _sc_h = frameRects[current_framename][current_frame].h*scale.y;
 
+        // after setting shit up, we then store it in src_rect.
         src_rect = {sx, sy, sw, sh};
     }
 }

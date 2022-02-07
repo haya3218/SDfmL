@@ -44,6 +44,9 @@ namespace Render {
 
             int id = NULL;
 
+            /*
+            * Create a new Object instance.
+            */
             void create(int x = 0, int y = 0, string path = "");
 
             virtual void Draw(float dt);
@@ -65,6 +68,9 @@ namespace Render {
 
             SDL_Rect src_rect = {0, 0, 0, 0};
 
+            /*
+            * Center object on the center of the screen on a certain axis. Defaults to both X and Y.
+            */
             void centerSelf(AXIS axis = XY);
         private:
             int _x, _y, _w, _h;
@@ -75,8 +81,17 @@ namespace Render {
 
     class AnimatedObject : public Object {
         public:
+            /*
+            * Create a new AnimatedObject instance.
+            */
             void create(int x = 0, int y = 0, string path = "");
+            /*
+            * Add an animation to said object. Uses SDL_Rects for frames.
+            */
             void AddAnimation(string anim_name, vector<SDL_Rect> points);
+            /*
+            * Play an animation.
+            */
             void PlayAnimation(string anim_name);
             virtual void Draw(float dt);
             
