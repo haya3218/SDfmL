@@ -34,7 +34,7 @@ class MainState : public State {
 
         title.scale.y = sin(elaped);
 
-        title.y = (480.0/2) - (title.h*title.scale.y/2);
+        title.centerSelf();
 
         elaped += 0.01;
     }

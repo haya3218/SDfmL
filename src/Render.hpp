@@ -24,6 +24,12 @@ struct Vector2
   float y = 1;
 };
 
+enum AXIS {
+    X,
+    Y,
+    XY
+};
+
 namespace Render {
     extern SDL_Window* window;
     extern SDL_Renderer* renderer;
@@ -54,6 +60,8 @@ namespace Render {
             int _sc_x, _sc_y, _sc_w, _sc_h;
             SDL_Texture* _tex = nullptr;
             void set_property(string name, bool value);
+
+            void centerSelf(AXIS axis = XY);
         private:
             int _x, _y, _w, _h;
             int _ori_w, _ori_h;

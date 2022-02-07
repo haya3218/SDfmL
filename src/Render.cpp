@@ -79,6 +79,21 @@ void Render::Object::Draw(float dt) {
     _sc_h = _h-cam_rect.h;
 }
 
+void Render::Object::centerSelf(AXIS axis) {
+    switch (axis) {
+        case X:
+            x = (WINDOW_WIDTH/2) - (w*scale.x/2);
+            break;
+        case Y:
+            y = (WINDOW_HEIGHT/2) - (h*scale.y/2);
+            break;
+        case XY:
+            x = (WINDOW_WIDTH/2) - (w*scale.x/2);
+            y = (WINDOW_HEIGHT/2) - (h*scale.y/2);
+            break;
+    }
+}
+
 bool Render::Init(string window_name) {
     consoleD = GetConsoleWindow();
     SetWindowTextA(consoleD, "Logging window");
