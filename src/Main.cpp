@@ -49,6 +49,7 @@ class MainState : public State {
 
         elaped += 0.01;
     }
+    
 };
 
 int main() {
