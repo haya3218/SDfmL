@@ -12,6 +12,7 @@ using namespace Render;
 class MainState : public State {
     AnimatedObject objs;
     TextObject text;
+    // objects need to be outside the function to work
     Object title;
     Object title2;
     Object title3;
@@ -46,6 +47,10 @@ class MainState : public State {
         title.center.x = WINDOW_WIDTH/2;
         title.center.y = WINDOW_HEIGHT/2;
 
+        title2.offset.x = 640;
+        title3.offset = {640, 480};
+        title4.offset.y = 480;
+
         text.create(50, 480 - 100, "Welcome to the funny application\nMake yourself at home :)\n- haya", "data/monogram.ttf", {255, 255, 255, 255}, TTF_STYLE_NORMAL, 40);
         AddObject(&text);
     }
@@ -62,10 +67,19 @@ class MainState : public State {
 
         title.scale.y = sin(elaped);
         title.scale.x = cos(elaped);
+        title2.scale.y = sin(elaped);
+        title2.scale.x = cos(elaped);
+        title3.scale.y = sin(elaped);
+        title3.scale.x = cos(elaped);
+        title4.scale.y = sin(elaped);
+        title4.scale.x = cos(elaped);
 
         pointTo(&camera, objs);
 
         title.centerSelf();
+        title2.centerSelf();
+        title3.centerSelf();
+        title4.centerSelf();
         text.centerSelf();
 
         text.scale.y = cos(elaped*10)*2;
