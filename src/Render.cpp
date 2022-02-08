@@ -75,13 +75,17 @@ vector<Object*> Render::State::get_obj() {
 
 void Render::Object::Draw(float dt) {
     _x = x;
-    _sc_x = x-cam_rect.x;
+    _sc_x = x-cam_rect->x;
     _y = y;
-    _sc_y = y-cam_rect.y;
+    _sc_y = y-cam_rect->y;
     _w = w*scale.x;
-    _sc_w = _w-cam_rect.w;
+    _sc_w = _w;
     _h = h*scale.y;
-    _sc_h = _h-cam_rect.h;
+    _sc_h = _h;
+}
+
+void Render::Object::setCamera(SDL_Rect* cam_p) {
+    cam_rect = cam_p;
 }
 
 void Render::AnimatedObject::Draw(float dt) {
@@ -286,4 +290,26 @@ bool Render::playMusic(string path) {
     currentMusic = path;
 
     return true;
+}
+
+void Render::pointTo(SDL_Rect* camera, Object object) {
+    camera->x = ( object.x + (object.w / 2)/2 ) - WINDOW_WIDTH / 2;
+    camera->y = ( object.y + (object.h / 2) ) - WINDOW_HEIGHT / 2;
+
+    if( camera->x < 0 )
+    { 
+        camera->x = 0;
+    }
+    if( camera->y < 0 )
+    {
+        camera->y = 0;
+    }
+    if( camera->x > camera->w )
+    {
+        camera->x = camera->w;
+    }
+    if( camera->y > camera->h )
+    {
+        camera->y = camera->h;
+    }
 }

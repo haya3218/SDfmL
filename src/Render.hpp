@@ -82,10 +82,13 @@ namespace Render {
             * Center object on the center of the screen on a certain axis. Defaults to both X and Y.
             */
             void centerSelf(AXIS axis = XY);
+
+            void setCamera(SDL_Rect* cam_p);
         private:
             int _x, _y, _w, _h;
             int _ori_w, _ori_h;
-            SDL_Rect cam_rect = {0, 0, 0, 0};
+            SDL_Rect du = {0, 0, 0, 0};
+            SDL_Rect* cam_rect = &du;
             map<string, bool> _properties;
     };
 
@@ -208,5 +211,10 @@ namespace Render {
     * Passing a blank string (e.g. "") will stop the current playing music.
     */
     bool playMusic(string path); 
+
+    /*
+    * Make the camera center itself on an object.
+    */
+    void pointTo(SDL_Rect* camera, Object object);
 }
 #endif

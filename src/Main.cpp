@@ -13,20 +13,40 @@ class MainState : public State {
     AnimatedObject objs;
     TextObject text;
     Object title;
+    Object title2;
+    Object title3;
+    Object title4;
+    SDL_Rect camera = {0, 0, WINDOW_WIDTH, WINDOW_HEIGHT};
     virtual void Create() {
         title.create(0, 0, "data/bg.png");
         AddObject(&title);
-        objs.create(50, 50, "data/smile.png");
+        
+        title2.create(640, 0, "data/bg.png");
+        AddObject(&title2);
+        
+        title3.create(640, 480, "data/bg.png");
+        AddObject(&title3);
+        
+        title4.create(0, 480, "data/bg.png");
+        AddObject(&title4);
+        objs.create(0, 0, "data/smile.png");
         AddObject(&objs);
         objs.AddAnimation("idle", {{0, 0, 50, 50}, {50, 0, 50, 50}});
         objs.PlayAnimation("idle");
         objs.framerate = 1;
+        objs.setCamera(&camera);
+        title.setCamera(&camera);
+        title2.setCamera(&camera);
+        title3.setCamera(&camera);
+        title4.setCamera(&camera);
         title.scale.y = 0;
+
+        objs.centerSelf();
 
         title.center.x = WINDOW_WIDTH/2;
         title.center.y = WINDOW_HEIGHT/2;
 
-        text.create(50, 480 - 100, "Welcome to the funny application\nMake yourself at home :)", "data/monogram.ttf", {255, 255, 255, 255}, TTF_STYLE_NORMAL, 40);
+        text.create(50, 480 - 100, "Welcome to the funny application\nMake yourself at home :)\n- haya", "data/monogram.ttf", {255, 255, 255, 255}, TTF_STYLE_NORMAL, 40);
         AddObject(&text);
     }
     int yvel = 0;
@@ -42,6 +62,8 @@ class MainState : public State {
 
         title.scale.y = sin(elaped);
         title.scale.x = cos(elaped);
+
+        pointTo(&camera, objs);
 
         title.centerSelf();
         text.centerSelf();
