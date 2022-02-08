@@ -15,7 +15,7 @@ using namespace Render;
 SDL_Window* Render::window;
 SDL_Renderer* Render::renderer;
 SDL_Event Render::event;
-State* Render::current_state;
+State* Render::current_state = nullptr;
 array<anshub::AudioOut, MAX_SE> Render::audioArray;
 anshub::AudioOut Render::music;
 string Render::currentMusic = "";
@@ -40,6 +40,7 @@ Render::State::~State() {
 
 void Render::Object::create(int x, int y, string path){
     this->_tex = IMG_LoadTexture(renderer, path.c_str());
+    SDL_SetTextureBlendMode(_tex, SDL_BLENDMODE_BLEND);
     if (_tex == nullptr) {
         cout << "texture failed to lod" << endl;
     }
@@ -82,6 +83,11 @@ void Render::Object::Draw(float dt) {
     _sc_w = _w;
     _h = h*scale.y;
     _sc_h = _h;
+
+    if (alpha > 100)
+        alpha = 100;
+
+    SDL_SetTextureAlphaMod(this->_tex, (this->alpha/100)*255);
 }
 
 void Render::Object::setCamera(SDL_Rect* cam_p) {
@@ -259,6 +265,11 @@ bool Render::Update() {
 }
 
 void Render::SwitchState(State* state) {
+    if (current_state != nullptr) {
+        for (int i = 0; i < current_state->get_obj().size(); i++) {
+            SDL_DestroyTexture(current_state->get_obj()[i]->_tex);
+        }
+    }
     current_state = state;
     current_state->Create();
 }
@@ -268,7 +279,7 @@ bool Render::playSound(string path, int id) {
         for (int i = 0; i < MAX_SE; i++) {
             if (audioArray[i].NowPlaying(false).size() == 0) {
                 audioArray[i].Play(path);
-                cout << "Played dat boi. audio id no: " << i << endl;
+                cout << "Played " << path << ". audio id no: " << i << endl;
                 break;
             }
         }
@@ -282,10 +293,14 @@ bool Render::playSound(string path, int id) {
 bool Render::playMusic(string path) {
     if (path == "") {
         music.Stop(currentMusic);
+        cout << "Stopped music from " << path << "." << endl;
+        return true;
     }
     if (currentMusic != "") {
         music.Stop(currentMusic);
+        cout << "Stopped music from " << path << "." << endl;
     }
+    cout << "Played " << path << " as music." << endl;
     music.Play(path, true);
     currentMusic = path;
 
@@ -293,7 +308,7 @@ bool Render::playMusic(string path) {
 }
 
 void Render::pointTo(SDL_Rect* camera, Object object) {
-    camera->x = ( object.x + (object.w / 2)/2 ) - WINDOW_WIDTH / 2;
+    camera->x = ( object.x + (object.w / 2) ) - WINDOW_WIDTH / 2;
     camera->y = ( object.y + (object.h / 2) ) - WINDOW_HEIGHT / 2;
 
     if( camera->x < 0 )

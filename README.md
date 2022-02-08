@@ -36,6 +36,8 @@ You know how to place them. It's fucking common sense.
 - After successfully making the build files, run `cmake --build --config Release` to build it without the use of VStudio.
 - If everything worked well, congratulations! You have just compiled a shitty program.
 
+`src/Main.cpp` should contain example code with some explanations.
+
 # Licensing
 
 The sole libraries themselves (SDL and BASS) are under different licenses ofc, so you'll have to deal with that

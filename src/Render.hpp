@@ -67,6 +67,8 @@ namespace Render {
 
             float angle = 0.00001;
 
+            float alpha = 100;
+
             SDL_Point center = {0, 0};
 
             map<string, bool> get_properties() const;
@@ -216,5 +218,9 @@ namespace Render {
     * Make the camera center itself on an object.
     */
     void pointTo(SDL_Rect* camera, Object object);
+
+    inline int Sec2Tick(float time) {
+        return FRAMERATE*time;
+    }
 }
 #endif
