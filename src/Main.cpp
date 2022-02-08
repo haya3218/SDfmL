@@ -107,7 +107,6 @@ MainState m2;
 class SplashScreen : public State {
     Object bg;
     Object black;
-    int tick[2];
     virtual void Create() {
         bg.create(0, 0, "data/powered.png");
         AddObject(&bg);
@@ -117,25 +116,14 @@ class SplashScreen : public State {
 
         black.alpha = 0;
 
+        Timer time;
+        Timer time2;
+        time2.start(1.0, [this](int dummy) {black.alpha += 1; return 0;}, true);
+        time.start(3.0, [](int dummy) {SwitchState(&m2); return 0;});
+
         playSound("data/flixel.ogg");
 
-        // basic timer
-        tick[0] = Sec2Tick(1.0);
-        tick[1] = Sec2Tick(3.0);
-
         //SDL_SetRenderDrawColor( renderer, 0xFF, 0xFF, 0xFF, 0xFF );
-    }
-    int now[2] = {0, 0};
-    virtual void Update(float dt) {
-        for (int i = 0; i < 2; i++) {
-            now[i]++;
-        }
-        if (!(now[0] < tick[0])) {
-            black.alpha += 1;
-        }
-        if (!(now[1] < tick[1])) {
-            SwitchState(&m2);
-        }
     }
 };
 

@@ -1,8 +1,10 @@
 #ifndef _RENDER_H
 #define _RENDER_H
 #include <array>
+#include <functional>
 #include <iostream>
 #include <map>
+#include <stdint.h>
 #include <vector>
 #include <string>
 #include <windows.h>
@@ -132,8 +134,27 @@ namespace Render {
             FC_AlignEnum alignment = FC_ALIGN_LEFT;
             SDL_Color color;
             string text = "";
+            bool antialiasing = false;
         private:
             int font_size = 20;
+    };
+
+    template <typename T>
+    using Func = std::function<T(T)>;
+
+    extern vector<float> _sec;
+    extern vector<Func<int>> _call;
+    extern vector<bool> _repeats;
+    extern vector<int> _ticks;
+
+    class Timer {
+        public:
+            void start(float seconds, Func<int> callback, bool repeat = false) {
+                _sec.push_back(seconds);
+                _call.push_back(callback);
+                _repeats.push_back(repeat);
+                _ticks.push_back(0);
+            }
     };
 
     /*
@@ -195,10 +216,11 @@ namespace Render {
     void SwitchState(State* state);
 
     extern SDL_Event event;
-    extern State* current_state;
 
     extern HWND hwnd;
     extern HWND consoleD;
+
+    extern State* current_state;
 
     extern array<anshub::AudioOut, MAX_SE> audioArray;
     extern anshub::AudioOut music;

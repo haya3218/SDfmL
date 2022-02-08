@@ -1,4 +1,6 @@
+#include <functional>
 #include <iostream>
+#include <iterator>
 #include <map>
 #include <stdio.h>
 #include <vector>
@@ -87,6 +89,9 @@ void Render::Object::Draw(float dt) {
     if (alpha > 100)
         alpha = 100;
 
+    if (alpha < 0)
+        alpha = 0;
+
     SDL_SetTextureAlphaMod(this->_tex, (this->alpha/100)*255);
 }
 
@@ -152,6 +157,7 @@ void Render::TextObject::Draw(float dt) {
     eff.color = color;
     eff.scale.x = scale.x;
     eff.scale.y = scale.y;
+    FC_SetFilterMode(font, (antialiasing ? FC_FILTER_LINEAR : FC_FILTER_NEAREST));
     FC_DrawEffect(font, renderer, x-offset.x, y-offset.y, eff, text.c_str());
 
     SDL_Rect rec = FC_GetBounds(font, x-offset.x, y-offset.y, alignment, eff.scale, text.c_str());
@@ -221,6 +227,19 @@ bool Render::Init(string window_name) {
     return true;
 }
 
+vector<float> Render::_sec;
+vector<Func<int>> Render::_call;
+vector<bool> Render::_repeats;
+vector<int> Render::_ticks;
+
+template <typename T>
+void remove_a(std::vector<T>& vec, size_t pos)
+{
+    typename std::vector<T>::iterator it = vec.begin();
+    std::advance(it, pos);
+    vec.erase(it);
+}
+
 bool Render::Update() {
     int lastUpdate = SDL_GetTicks();
     bool run = true;
@@ -240,6 +259,32 @@ bool Render::Update() {
         float dT = (current - lastUpdate) / 1000.0f;
 
         current_state->Update(dT);
+
+        // I know this is a shitty way to do this
+        // but bear with me
+        // it was hard to work with lambdas properly man
+        // let me have this just one please :)
+        if (_sec.size() > 0) {
+            for (int i = 0; i < _sec.size(); i++) {
+                if (_ticks[i] != -1)
+                    _ticks[i]++;
+
+                if (_sec[i] != -1) {
+                    if (!(_ticks[i] < Sec2Tick(_sec[i]))) {
+                        if (_call[i] != NULL)
+                            _call[i](NULL);
+                        if (!_repeats[i] && _repeats[i] != NULL)
+                        {
+                            _ticks[i] = -1;
+                            _sec[i] = -1;
+                            _call[i] = NULL;
+                            _repeats[i] = NULL;
+                        }
+                    }
+                }
+                // cout << i << endl;
+            }
+        }
 
         lastUpdate = current;
         
@@ -266,6 +311,10 @@ bool Render::Update() {
 
 void Render::SwitchState(State* state) {
     if (current_state != nullptr) {
+        _ticks = {};
+        _call = {};
+        _repeats = {};
+        _sec = {};
         for (int i = 0; i < current_state->get_obj().size(); i++) {
             SDL_DestroyTexture(current_state->get_obj()[i]->_tex);
         }
