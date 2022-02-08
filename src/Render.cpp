@@ -114,38 +114,40 @@ void Render::AnimatedObject::PlayAnimation(string anim_name) {
     current_framename = anim_name;
 }
 
-void Render::TextObject::create(int x, int y, string text, string font_name) {
+void Render::TextObject::create(int x, int y, string text, string font_name, SDL_Color color, int style, int size) {
     Render::Object::create(x,y,"data/smile.png"); // dummy
-
-    font = TTF_OpenFont(font_name.c_str(), 25);
-
-    SDL_Surface* temp = TTF_RenderText_Solid(font, text.c_str(), {255, 255, 255, 255});
-
     this->text = text;
-
-    this->_tex = SDL_CreateTextureFromSurface(renderer, temp);
-    SDL_FreeSurface(temp);
-    int w_, h_;
-    SDL_QueryTexture(this->_tex, NULL, NULL, &w_, &h_);
-    _sc_w = w_;
-    _sc_h = h_;
+    _tex = nullptr;
+    _sc_x = x;
+    _sc_y = y;
+    _sc_w = strlen(text.c_str())*size;
+    _sc_h = strlen(text.c_str())*size;
     this->x = x;
     this->y = y;
-    w = w_;
-    h = h_;
+    w = strlen(text.c_str())*size;
+    h = strlen(text.c_str())*size;
+
+    font_size = size;
+    this->color = color;
+
+    font = FC_CreateFont();
+    FC_LoadFont(font, renderer, font_name.c_str(), size, color, style);
 }
 
-void Render::TextObject::changeText(string text) {
-    SDL_Surface* temp = TTF_RenderText_Solid(font, text.c_str(), {255, 255, 255, 255});
-    this->text = text;
-    this->_tex = SDL_CreateTextureFromSurface(renderer, temp);
-    SDL_FreeSurface(temp);
-    int w_, h_;
-    SDL_QueryTexture(this->_tex, NULL, NULL, &w_, &h_);
-    _sc_w = w_;
-    _sc_h = h_;
-    w = w_;
-    h = h_;
+void Render::TextObject::Draw(float dt) {
+    Render::Object::Draw(dt);
+
+    FC_Effect eff;
+    eff.alignment = alignment;
+    eff.color = color;
+    eff.scale.x = scale.x;
+    eff.scale.y = scale.y;
+    FC_DrawEffect(font, renderer, x-offset.x, y-offset.y, eff, text.c_str());
+
+    SDL_Rect rec = FC_GetBounds(font, x-offset.x, y-offset.y, alignment, eff.scale, text.c_str());
+
+    w = rec.w;
+    h = rec.h;
 }
 
 void Render::Object::centerSelf(AXIS axis) {

@@ -30,6 +30,10 @@ include_directories(${CMAKE_CURRENT_LIST_DIR}/src)
 # add EVERY FUCKING source file to SOURCES
 FILE(GLOB SOURCES "${CMAKE_CURRENT_LIST_DIR}/src/*.cpp" 
 "${CMAKE_CURRENT_LIST_DIR}/src/*.hpp"  
+"${CMAKE_CURRENT_LIST_DIR}/src/*.c"  
+"${CMAKE_CURRENT_LIST_DIR}/src/*.h"  
+"${CMAKE_CURRENT_LIST_DIR}/src/SDL2/*.c"  
+"${CMAKE_CURRENT_LIST_DIR}/src/SDL2/*.h"  
 "${CMAKE_CURRENT_LIST_DIR}/src/BASS/audio_out.h" 
 "${CMAKE_CURRENT_LIST_DIR}/src/BASS/audio_fx.h" 
 "${CMAKE_CURRENT_LIST_DIR}/src/BASS/audio_out.cc" 

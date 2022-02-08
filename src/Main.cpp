@@ -26,9 +26,7 @@ class MainState : public State {
         title.center.x = WINDOW_WIDTH/2;
         title.center.y = WINDOW_HEIGHT/2;
 
-        text.create(50, 480 - 100, "funny");
-        text.scale.x = 2;
-        text.scale.y = 2;
+        text.create(50, 480 - 100, "Welcome to the funny application\nMake yourself at home :)", "data/monogram.ttf", {255, 255, 255, 255}, TTF_STYLE_NORMAL, 40);
         AddObject(&text);
     }
     int yvel = 0;
@@ -46,6 +44,10 @@ class MainState : public State {
         title.scale.x = cos(elaped);
 
         title.centerSelf();
+        text.centerSelf();
+
+        text.scale.y = cos(elaped*10)*2;
+        text.offset.y = -240/2;
 
         elaped += 0.01;
     }

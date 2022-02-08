@@ -9,6 +9,7 @@
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_ttf.h"
 #include "BASS/audio_out.h"
+#include "SDL2/SDL_FontCache.h"
 
 using namespace std;
 
@@ -23,6 +24,12 @@ struct Vector2
 {
   float x = 1;
   float y = 1;
+};
+
+struct Vector2i
+{
+  int x = 1;
+  int y = 1;
 };
 
 enum AXIS {
@@ -53,6 +60,8 @@ namespace Render {
             virtual void Draw(float dt);
 
             int x, y, w, h;
+
+            Vector2i offset = {0, 0};
 
             Vector2 scale;
 
@@ -110,15 +119,16 @@ namespace Render {
             /*
             * Create a new TextObject instance.
             */
-            virtual void create(int x = 0, int y = 0, string text = "", string font_name = "data/monogram.ttf");
-            /*
-            * Change current text. !! TO AVOID MEMORY LEAKS, DO NOT RUN THIS EVERY FRAME! !!
-            */
-            virtual void changeText(string text = "");
+            virtual void create(int x = 0, int y = 0, string text = "", string font_name = "data/monogram.ttf", SDL_Color color = {255, 255, 255, 255}, int style = TTF_STYLE_NORMAL, int size = 20);
 
-            TTF_Font* font;
-        private:
+            virtual void Draw(float dt);
+
+            FC_Font* font;
+            FC_AlignEnum alignment = FC_ALIGN_LEFT;
+            SDL_Color color;
             string text = "";
+        private:
+            int font_size = 20;
     };
 
     /*
@@ -146,12 +156,14 @@ namespace Render {
                 if (obj.size() > 0)
                     for (int i = 0; i < obj.size(); i++) {
                         obj[i]->Draw(dt);
-                        SDL_Rect r = {obj[i]->_sc_x, obj[i]->_sc_y, obj[i]->_sc_w, obj[i]->_sc_h};
-                        SDL_Rect r2 = obj[i]->src_rect;
-                        if (r2.w != 0 && r2.h != 0)
-                            SDL_RenderCopyEx(renderer, obj[i]->_tex, &r2, &r, obj[i]->angle, &obj[i]->center, SDL_FLIP_NONE);
-                        else
-                            SDL_RenderCopyEx(renderer, obj[i]->_tex, NULL, &r, obj[i]->angle, &obj[i]->center, SDL_FLIP_NONE);
+                        if (obj[i]->_tex != nullptr) {
+                            SDL_Rect r = {obj[i]->_sc_x+obj[i]->offset.x, obj[i]->_sc_y+obj[i]->offset.y, obj[i]->_sc_w, obj[i]->_sc_h};
+                            SDL_Rect r2 = obj[i]->src_rect;
+                            if (r2.w != 0 && r2.h != 0)
+                                SDL_RenderCopyEx(renderer, obj[i]->_tex, &r2, &r, obj[i]->angle, &obj[i]->center, SDL_FLIP_NONE);
+                            else
+                                SDL_RenderCopyEx(renderer, obj[i]->_tex, NULL, &r, obj[i]->angle, &obj[i]->center, SDL_FLIP_NONE);
+                        }
                     }
                 SDL_RenderPresent(renderer);
             }
