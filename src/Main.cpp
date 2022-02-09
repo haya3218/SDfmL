@@ -130,11 +130,13 @@ class SplashScreen : public State {
 SplashScreen m;
 
 int main() {
-    Init("SDLflixel :)))))");
+    if (!Init("SDLflixel :)))))")){
+        return ERROR_CODE;
+    }
 
     SwitchState(&m);
 
     if (!Update()) {
-        return 0;
+        return NO_ERROR_CODE;
     }
 }

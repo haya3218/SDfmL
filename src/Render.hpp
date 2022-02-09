@@ -5,15 +5,16 @@
 #include <iostream>
 #include <map>
 #include <stdint.h>
+#include <system_error>
 #include <vector>
 #include <string>
 #include <windows.h>
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_ttf.h"
-#include "BASS/audio_out.h"
 #include "SDL2/SDL_FontCache.h"
 #include "SoLoud/soloud.h"
 #include "SoLoud/soloud_wav.h"
+#include "SoLoud/soloud_wavstream.h"
 #include "SoLoud/soloud_openmpt.h"
 
 using namespace std;
@@ -41,6 +42,12 @@ enum AXIS {
     X,
     Y,
     XY
+};
+
+enum CLOSE_CODES {
+    NO_ERROR_CODE,
+    ERROR_CODE,
+    UNKNOWN
 };
 
 namespace Render {
@@ -227,7 +234,7 @@ namespace Render {
 
     extern SoLoud::Soloud se;
     extern SoLoud::Soloud music;
-    extern SoLoud::Wav waveLoader;
+    extern SoLoud::WavStream waveLoader;
     extern SoLoud::Openmpt modLoader;
     extern string currentMusic;
     extern int seIndex;

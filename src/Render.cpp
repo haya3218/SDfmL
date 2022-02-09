@@ -23,7 +23,7 @@ SDL_Event Render::event;
 State* Render::current_state = nullptr;
 SoLoud::Soloud Render::music;
 SoLoud::Soloud Render::se;
-SoLoud::Wav Render::waveLoader;
+SoLoud::WavStream Render::waveLoader;
 SoLoud::Openmpt Render::modLoader;
 string Render::currentMusic = "";
 HWND Render::hwnd;
