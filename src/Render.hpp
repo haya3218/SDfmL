@@ -53,6 +53,12 @@ enum CLOSE_CODES {
     UNKNOWN
 };
 
+enum LOG_TYPE {
+    NORMAL,
+    WARNING,
+    ERROR_
+};
+
 namespace Render {
     extern SDL_Window* window;
     extern SDL_Renderer* renderer;
@@ -263,6 +269,8 @@ namespace Render {
     * Make the camera center itself on an object.
     */
     void pointTo(SDL_Rect* camera, Object object);
+
+    void log(string file, int line, string prefix, string msg, LOG_TYPE type = NORMAL);
 
     inline int Sec2Tick(float time) {
         return FRAMERATE*time;

@@ -1,8 +1,11 @@
+#include <fstream>
 #include <functional>
 #include <iostream>
 #include <iterator>
 #include <map>
+#include <sstream>
 #include <stdio.h>
+#include <time.h>
 #include <vector>
 #include <string>
 #include "SDL2/SDL.h"
@@ -13,6 +16,10 @@
 #include "SoLoud/soloud.h"
 #include "SoLoud/soloud_wav.h"
 #include "SoLoud/soloud_openmpt.h"
+#include <iomanip>
+
+#include <ctime>
+#include <winuser.h>
 
 using namespace std;
 using namespace Render;
@@ -192,42 +199,45 @@ void Render::Object::centerSelf(AXIS axis) {
 bool Render::Init(string window_name) {
     consoleD = GetConsoleWindow();
     SetWindowTextA(consoleD, "Logging window");
+    std::ofstream logFile;
+    logFile.open("log.txt", std::ofstream::out | std::ofstream::trunc);
+    logFile.close();
     if (se.init() > 0) {
-        cout << "SoLoud has failed to load. Is your dll broken?" << endl;
+        log("Render.cpp", 202, "SoLoud", " has failed to load. Is your dll broken?", ERROR_);
         return false;
     }
     if (music.init() > 0) {
-        cout << "SoLoud has failed to load. Is your dll broken?" << endl;
+        log("Render.cpp", 206, "SoLoud", " has failed to load. Is your dll broken?", ERROR_);
         return false;
     }
-    cout << "Successfully initialized the SoLoud audio system. Command next." << endl;
+    log("Render.cpp", 209, "SoLoud", " has been successfully initialized.", NORMAL);
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
-        cout << "SDL has failed to initialize. Is your dll broken? " << SDL_GetError() << endl;
+        log("Render.cpp", 211, "SDL", " has failed to load. Is your dll broken? " + string(SDL_GetError()), ERROR_);
         return false;
     }
-    cout << "Successfully initialized SDL. Command next." << endl;
+    log("Render.cpp", 214, "SDL", " has been successfully initialized.", NORMAL);
     if (IMG_Init(IMG_INIT_PNG) == 0) {
-        cout << "SDL_image has failed to initialize. Is your dll broken? " << SDL_GetError() << endl;
+        log("Render.cpp", 216, "SDL_image", " has failed to load. Is your dll broken? " + string(SDL_GetError()), ERROR_);
         return false;
     }
-    cout << "Successfully initialized SDL_image. Command next." << endl;
+    log("Render.cpp", 219, "SDL_image", " has been successfully initialized.", NORMAL);
     if (TTF_Init() < 0) {
-        cout << "SDL_ttf has failed to initialize. Is your dll broken? " << SDL_GetError() << endl;
+        log("Render.cpp", 221, "SDL_ttf", " has failed to load. Is your dll broken? " + string(SDL_GetError()), ERROR_);
         return false;
     }
-    cout << "Successfully initialized SDL_ttf. Command next." << endl;
+    log("Render.cpp", 224, "SDL_ttf", " has been successfully initialized.", NORMAL);
     window = SDL_CreateWindow(window_name.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_OPENGL|SDL_WINDOW_SHOWN);
     if (window == nullptr) {
-        cout << "Window has failed to initialize. "<< SDL_GetError() << endl;
+        log("Render.cpp", 227, "A window", " failed to be created. " + string(SDL_GetError()), ERROR_);
         return false;
     }
-    cout << "Successfully made a window. Command next." << endl;
+    log("Render.cpp", 230, "A window", " has been created.", NORMAL);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     if (renderer == nullptr) {
-        cout << "Renderer has failed to initialize. "<< SDL_GetError() << endl;
+        log("Render.cpp", 223, "A renderer", " failed to be created. " + string(SDL_GetError()), ERROR_);
         return false;
     }
-    cout << "Successfully made a renderer. Command next." << endl;
+    log("Render.cpp", 236, "A renderer", " has been created.", NORMAL);
 
     current_sf.load(SOUNDFONT);
 
@@ -236,7 +246,7 @@ bool Render::Init(string window_name) {
     SDL_GetWindowWMInfo(window, &wmInfo);
     hwnd = wmInfo.info.win.window;
 
-    cout << "Finalized initialization. Command over." << endl;
+    log("Render.cpp", 245, "", "Finalized initialization. Command over.", NORMAL);
 
     return true;
 }
@@ -328,6 +338,7 @@ bool Render::Update() {
 }
 
 void Render::SwitchState(State* state) {
+    log("Render.cpp", 337, "", "Switching states...");
     if (current_state != nullptr) {
         _ticks = {};
         _call = {};
@@ -338,10 +349,12 @@ void Render::SwitchState(State* state) {
         }
     }
     current_state = state;
+    log("Render.cpp", 349, "Success!", " Calling Create()....");
     current_state->Create();
 }
 
 bool Render::playSound(string path, bool override) {
+    log("Render.cpp", 354, "", "Played sound from " + path);
     waveLoader.setLooping(false);
     if (override) {
         se.stop(seIndex);
@@ -354,9 +367,11 @@ bool Render::playSound(string path, bool override) {
 
 bool Render::playMusic(string path) {
     if (path == "") {
+        log("Render.cpp", 367, "", "Silence." + path);
         music.stopAll();
         return true;
     }
+    log("Render.cpp", 371, "", "Played music from " + path);
     if (currentMusic == path) {
         music.stopAll();
     }
@@ -370,6 +385,7 @@ bool Render::playMusic(string path) {
 
 bool Render::playModPlug(string path) {
     if (path == "") {
+        log("Render.cpp", 385, "", "Silence." + path);
         music.stopAll();
         return true;
     }
@@ -378,6 +394,7 @@ bool Render::playModPlug(string path) {
     }
     // midis
     if (path.find(".mid") != string::npos) {
+        log("Render.cpp", 394, "", "Played midi from " + path + " with soundfont " + SOUNDFONT);
         midiLoader.load(path.c_str(), current_sf);
         midiLoader.setLooping(true);
         music.play(midiLoader);
@@ -385,6 +402,7 @@ bool Render::playModPlug(string path) {
 
         return true;
     }
+    log("Render.cpp", 402, "", "Played mod tracker from " + path);
     modLoader.load(path.c_str());
     modLoader.setLooping(true);
     music.play(modLoader);
@@ -413,4 +431,38 @@ void Render::pointTo(SDL_Rect* camera, Object object) {
     {
         camera->y = camera->h;
     }
+}
+
+// shoutouts to gedehari for doing this
+void Render::log(string file, int line, string prefix, string msg, LOG_TYPE type) {
+    clock_t now = std::clock();
+
+    double now_n = (double)now / CLOCKS_PER_SEC;
+
+    string typeName = "LOG";
+
+    switch (type) {
+        case NORMAL:
+            break;
+        case WARNING:
+            typeName = "WARNING";
+            break;
+        case ERROR_:
+            typeName = "ERROR";
+            break;
+    }
+
+    std::stringstream buf;
+
+    buf << (int)(now_n/60) << ":"
+        << std::setfill('0') << std::setw(2) << (int)((int)now_n % 60) << "."
+        << std::setfill('0') << std::setw(3) << (int)((now_n - (int)now_n) * 1000) << " "
+        << typeName << ": (" << file << ":" << line << ") " << prefix << msg << endl;
+
+    std::ofstream logFile;
+    logFile.open("log.txt", std::ios::app);
+    logFile << buf.str();
+    logFile.close();
+
+    cout << buf.str();
 }
