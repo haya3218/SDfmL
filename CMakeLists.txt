@@ -7,6 +7,7 @@ project(Skateboard)
 # SDL2 include directories
 set(SDL2_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/src/SDL2/")
 set(OUT_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/")
+set(OUT2_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/MIDI/")
 
 # Support both 32 and 64 bit builds
 if (${CMAKE_SIZEOF_VOID_P} MATCHES 8)
@@ -24,6 +25,7 @@ string(STRIP "${MAIN_LIBRARIES}" MAIN_LIBRARIES)
 # Include the damn directories
 include_directories(${SDL2_INCLUDE_DIRS})
 include_directories(${OUT_INCLUDE_DIRS})
+include_directories(${OUT2_INCLUDE_DIRS})
 include_directories(${CMAKE_CURRENT_LIST_DIR}/src)
 
 # add EVERY FUCKING source file to SOURCES
@@ -68,6 +70,10 @@ FILE(GLOB SOURCES "${CMAKE_CURRENT_LIST_DIR}/src/*.cpp"
 "${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/soloud_waveshaperfilter.h"
 "${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/soloud_wavstream.h"
 "${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/soloud.h"
+"${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/MIDI/tml.h"
+"${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/MIDI/tsf.h"
+"${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/MIDI/soloud_midi.h"
+"${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/MIDI/*.cpp"
 )
 
 # set c++ std to 17

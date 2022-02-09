@@ -16,6 +16,7 @@
 #include "SoLoud/soloud_wav.h"
 #include "SoLoud/soloud_wavstream.h"
 #include "SoLoud/soloud_openmpt.h"
+#include "SoLoud/MIDI/soloud_midi.h"
 
 using namespace std;
 
@@ -25,6 +26,8 @@ using namespace std;
 #define FRAMERATE 60
 
 #define MAX_SE 10
+
+#define SOUNDFONT "data/gm.sf2"
 
 struct Vector2
 {
@@ -236,6 +239,8 @@ namespace Render {
     extern SoLoud::Soloud music;
     extern SoLoud::WavStream waveLoader;
     extern SoLoud::Openmpt modLoader;
+    extern SoLoud::Midi midiLoader;
+    extern SoLoud::SoundFont current_sf;
     extern string currentMusic;
     extern int seIndex;
     /*
@@ -247,6 +252,12 @@ namespace Render {
     * Passing a blank string (e.g. "") will stop the current playing music.
     */
     bool playMusic(string path); 
+    /*
+    * Play music thru the openMPT api (669, amf, ams, dbm, digi, dmf, dsm, far, gdm, ice, imf, it, itp, j2b, m15, mdl, med, mo3, mod, mptm, mt2, mtm, okt, plm, psm, ptm, s3m, stm, ult, umx, wow, xm). Always loops.
+    * When a midi is passed (mid), it will use a TSF-based midi loader instead.
+    * Passing a blank string (e.g. "") will stop the current playing music.
+    */
+    bool playModPlug(string path); 
 
     /*
     * Make the camera center itself on an object.

@@ -22,7 +22,7 @@ class MainState : public State {
     // to override a function, just state back the name of it with a virtual keyword
     // before it
     virtual void Create() {
-        playMusic("data/canyon.ogg");
+        playModPlug("data/canyon.mid");
         // i know that this isnt the best idea to do this
         // yeah, im just lazy
         title.create(0, 0, "data/bg.png");

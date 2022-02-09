@@ -25,6 +25,8 @@ SoLoud::Soloud Render::music;
 SoLoud::Soloud Render::se;
 SoLoud::WavStream Render::waveLoader;
 SoLoud::Openmpt Render::modLoader;
+SoLoud::Midi Render::midiLoader;
+SoLoud::SoundFont Render::current_sf;
 string Render::currentMusic = "";
 HWND Render::hwnd;
 HWND Render::consoleD;
@@ -227,6 +229,8 @@ bool Render::Init(string window_name) {
     }
     cout << "Successfully made a renderer. Command next." << endl;
 
+    current_sf.load(SOUNDFONT);
+
     SDL_SysWMinfo wmInfo;
     SDL_VERSION(&wmInfo.version);
     SDL_GetWindowWMInfo(window, &wmInfo);
@@ -312,6 +316,10 @@ bool Render::Update() {
     }
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
+    se.stopAll();
+    music.stopAll();
+    se.deinit();
+    music.deinit();
     IMG_Quit();
     TTF_Quit();
     SDL_Quit();
@@ -345,12 +353,41 @@ bool Render::playSound(string path, bool override) {
 }
 
 bool Render::playMusic(string path) {
+    if (path == "") {
+        music.stopAll();
+        return true;
+    }
     if (currentMusic == path) {
         music.stopAll();
     }
     waveLoader.load(path.c_str());
     waveLoader.setLooping(true);
     music.play(waveLoader);
+    currentMusic = path;
+
+    return true;
+}
+
+bool Render::playModPlug(string path) {
+    if (path == "") {
+        music.stopAll();
+        return true;
+    }
+    if (currentMusic == path) {
+        music.stopAll();
+    }
+    // midis
+    if (path.find(".mid") != string::npos) {
+        midiLoader.load(path.c_str(), current_sf);
+        midiLoader.setLooping(true);
+        music.play(midiLoader);
+        currentMusic = path;
+
+        return true;
+    }
+    modLoader.load(path.c_str());
+    modLoader.setLooping(true);
+    music.play(modLoader);
     currentMusic = path;
 
     return true;
