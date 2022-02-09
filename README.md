@@ -30,7 +30,7 @@ To use it (in windows atleast),
 
 - Get SDL2, SDL_image 2.0, and SDL_ttf 2.0, and put em on the respective x86 and x64 folders.
 You know how to place them. It's fucking common sense.
-- [SoLoud. ](https://www.un4seen.com/bass.html) Follow GENie instructions and build as a static library.
+- [SoLoud. ](https://sol.gfxile.net/soloud/index.html) Follow GENie instructions and build as a static library.
 Since it's currently confusing to do, [here's some prebuilt lib files for use with this wrapper.](https://cdn.discordapp.com/attachments/872338952483381258/940791426797686804/SoLoud_Static.zip)
 - Clone the dam repo somewhere on ur machine.
 - Go to where you cloned it, and run `cmake -B build -DCMAKE_BUILD_TYPE=Release`
