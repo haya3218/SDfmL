@@ -10,6 +10,9 @@
 #include "SDL2/SDL_ttf.h"
 #include "Render.hpp"
 #include "SDL2/SDL_syswm.h"
+#include "SoLoud/soloud.h"
+#include "SoLoud/soloud_wav.h"
+#include "SoLoud/soloud_openmpt.h"
 
 using namespace std;
 using namespace Render;
@@ -18,11 +21,14 @@ SDL_Window* Render::window;
 SDL_Renderer* Render::renderer;
 SDL_Event Render::event;
 State* Render::current_state = nullptr;
-array<anshub::AudioOut, MAX_SE> Render::audioArray;
-anshub::AudioOut Render::music;
+SoLoud::Soloud Render::music;
+SoLoud::Soloud Render::se;
+SoLoud::Wav Render::waveLoader;
+SoLoud::Openmpt Render::modLoader;
 string Render::currentMusic = "";
 HWND Render::hwnd;
 HWND Render::consoleD;
+int Render::seIndex;
 
 Render::Object::Object() {
     
@@ -184,11 +190,15 @@ void Render::Object::centerSelf(AXIS axis) {
 bool Render::Init(string window_name) {
     consoleD = GetConsoleWindow();
     SetWindowTextA(consoleD, "Logging window");
-    if (!BASS_Init(1, 44100, BASS_DEVICE_8BITS|BASS_DEVICE_REINIT, 0, NULL)) {
-        cout << "BASS has failed to initialize. Is your dll broken? <NO ERROR>" << endl;
+    if (se.init() > 0) {
+        cout << "SoLoud has failed to load. Is your dll broken?" << endl;
         return false;
     }
-    cout << "Successfully initialized the BASS audio system. Command next." << endl;
+    if (music.init() > 0) {
+        cout << "SoLoud has failed to load. Is your dll broken?" << endl;
+        return false;
+    }
+    cout << "Successfully initialized the SoLoud audio system. Command next." << endl;
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
         cout << "SDL has failed to initialize. Is your dll broken? " << SDL_GetError() << endl;
         return false;
@@ -323,34 +333,24 @@ void Render::SwitchState(State* state) {
     current_state->Create();
 }
 
-bool Render::playSound(string path, int id) {
-    if (id == NULL) {
-        for (int i = 0; i < MAX_SE; i++) {
-            if (audioArray[i].NowPlaying(false).size() == 0) {
-                audioArray[i].Play(path);
-                cout << "Played " << path << ". audio id no: " << i << endl;
-                break;
-            }
-        }
-    } else {
-        audioArray[id].Play(path);
+bool Render::playSound(string path, bool override) {
+    waveLoader.setLooping(false);
+    if (override) {
+        se.stop(seIndex);
     }
+    waveLoader.load(path.c_str());
+    seIndex = se.play(waveLoader);
     
     return true;
 }
 
 bool Render::playMusic(string path) {
-    if (path == "") {
-        music.Stop(currentMusic);
-        cout << "Stopped music from " << path << "." << endl;
-        return true;
+    if (currentMusic == path) {
+        music.stopAll();
     }
-    if (currentMusic != "") {
-        music.Stop(currentMusic);
-        cout << "Stopped music from " << path << "." << endl;
-    }
-    cout << "Played " << path << " as music." << endl;
-    music.Play(path, true);
+    waveLoader.load(path.c_str());
+    waveLoader.setLooping(true);
+    music.play(waveLoader);
     currentMusic = path;
 
     return true;

@@ -6,17 +6,17 @@ project(Skateboard)
 
 # SDL2 include directories
 set(SDL2_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/src/SDL2/")
-set(OUT_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/src/BASS/")
-set(BASS_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/src/BASS/BASS/")
+set(OUT_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/")
 
 # Support both 32 and 64 bit builds
 if (${CMAKE_SIZEOF_VOID_P} MATCHES 8)
-  set(MAIN_LIBRARIES "${CMAKE_CURRENT_LIST_DIR}/lib/x64/SDL2.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x64/SDL2main.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x64/SDL2_image.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x64/SDL2_ttf.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x64/bass.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x64/bass_fx.lib")
+  set(MAIN_LIBRARIES "${CMAKE_CURRENT_LIST_DIR}/lib/x64/soloud_static.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x64/SDL2.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x64/SDL2main.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x64/SDL2_image.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x64/SDL2_ttf.lib")
   set(MAIN_LIBRARIES_E "${CMAKE_CURRENT_LIST_DIR}/lib/x64/")
 else ()
-  set(MAIN_LIBRARIES "${CMAKE_CURRENT_LIST_DIR}/lib/x86/SDL2.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x86/SDL2main.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x86/SDL2_image.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x86/SDL2_ttf.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x86/bass.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x86/bass_fx.lib")
+  set(MAIN_LIBRARIES "${CMAKE_CURRENT_LIST_DIR}/lib/x86/soloud_static.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x86/SDL2.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x86/SDL2main.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x86/SDL2_image.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x86/SDL2_ttf.lib")
   set(MAIN_LIBRARIES_E "${CMAKE_CURRENT_LIST_DIR}/lib/x86/")
 endif ()
+
 
 # strip it all
 string(STRIP "${MAIN_LIBRARIES}" MAIN_LIBRARIES)
@@ -24,7 +24,6 @@ string(STRIP "${MAIN_LIBRARIES}" MAIN_LIBRARIES)
 # Include the damn directories
 include_directories(${SDL2_INCLUDE_DIRS})
 include_directories(${OUT_INCLUDE_DIRS})
-include_directories(${BASS_INCLUDE_DIRS})
 include_directories(${CMAKE_CURRENT_LIST_DIR}/src)
 
 # add EVERY FUCKING source file to SOURCES
@@ -34,10 +33,42 @@ FILE(GLOB SOURCES "${CMAKE_CURRENT_LIST_DIR}/src/*.cpp"
 "${CMAKE_CURRENT_LIST_DIR}/src/*.h"  
 "${CMAKE_CURRENT_LIST_DIR}/src/SDL2/*.c"  
 "${CMAKE_CURRENT_LIST_DIR}/src/SDL2/*.h"  
-"${CMAKE_CURRENT_LIST_DIR}/src/BASS/audio_out.h" 
-"${CMAKE_CURRENT_LIST_DIR}/src/BASS/audio_fx.h" 
-"${CMAKE_CURRENT_LIST_DIR}/src/BASS/audio_out.cc" 
-"${CMAKE_CURRENT_LIST_DIR}/src/BASS/audio_fx.cc")
+"${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/soloud_audiosource.h"
+"${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/soloud_bassboostfilter.h"
+"${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/soloud_biquadresonantfilter.h"
+"${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/soloud_bus.h"
+"${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/soloud_c.h"
+"${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/soloud_dcremovalfilter.h"
+"${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/soloud_echofilter.h"
+"${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/soloud_error.h"
+"${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/soloud_fader.h"
+"${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/soloud_fft.h"
+"${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/soloud_fftfilter.h"
+"${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/soloud_file_hack_off.h"
+"${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/soloud_file_hack_on.h"
+"${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/soloud_file.h"
+"${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/soloud_filter.h"
+"${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/soloud_flangerfilter.h"
+"${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/soloud_freeverbfilter.h"
+"${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/soloud_internal.h"
+"${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/soloud_lofifilter.h"
+"${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/soloud_misc.h"
+"${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/soloud_monotone.h"
+"${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/soloud_noise.h"
+"${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/soloud_openmpt.h"
+"${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/soloud_queue.h"
+"${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/soloud_robotizefilter.h"
+"${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/soloud_sfxr.h"
+"${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/soloud_speech.h"
+"${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/soloud_tedsid.h"
+"${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/soloud_thread.h"
+"${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/soloud_vic.h"
+"${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/soloud_vizsn.h"
+"${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/soloud_wav.h"
+"${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/soloud_waveshaperfilter.h"
+"${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/soloud_wavstream.h"
+"${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/soloud.h"
+)
 
 # set c++ std to 17
 set(CMAKE_CXX_STANDARD 17)
@@ -70,7 +101,6 @@ file(REMOVE_RECURSE "${BUILD_DIRECTORY}/SDL2_image.lib")
 file(REMOVE_RECURSE "${BUILD_DIRECTORY}/SDL2_ttf.lib")
 file(REMOVE_RECURSE "${BUILD_DIRECTORY}/SDL2main.lib")
 file(REMOVE_RECURSE "${BUILD_DIRECTORY}/SDL2test.lib")
-file(REMOVE_RECURSE "${BUILD_DIRECTORY}/bass.lib")
-file(REMOVE_RECURSE "${BUILD_DIRECTORY}/bass_fx.lib")
+file(REMOVE_RECURSE "${BUILD_DIRECTORY}/soloud_static.lib")
 
 # :)

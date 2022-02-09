@@ -12,6 +12,9 @@
 #include "SDL2/SDL_ttf.h"
 #include "BASS/audio_out.h"
 #include "SDL2/SDL_FontCache.h"
+#include "SoLoud/soloud.h"
+#include "SoLoud/soloud_wav.h"
+#include "SoLoud/soloud_openmpt.h"
 
 using namespace std;
 
@@ -222,14 +225,16 @@ namespace Render {
 
     extern State* current_state;
 
-    extern array<anshub::AudioOut, MAX_SE> audioArray;
-    extern anshub::AudioOut music;
+    extern SoLoud::Soloud se;
+    extern SoLoud::Soloud music;
+    extern SoLoud::Wav waveLoader;
+    extern SoLoud::Openmpt modLoader;
     extern string currentMusic;
+    extern int seIndex;
     /*
-    * Play a sound. If a sound is currently playing then it will proceed to a different sound id.
-    * You can also specify the specific id, if you intentionally want the sound to override another.
+    * Play a sound. Will not override unless said so.
     */
-    bool playSound(string path, int id = NULL); 
+    bool playSound(string path, bool override = false); 
     /*
     * Play music. Always loops.
     * Passing a blank string (e.g. "") will stop the current playing music.
