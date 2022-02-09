@@ -1,8 +1,10 @@
 ![bitch](logo.png)
 
-# SDFML
+# SDfmL
 
-**A basic wrapper meant to make creating SHIT easier**
+*Simple DirectMedia Flixel-like Multipurpose Layer*
+
+*A basic wrapper meant to make creating SHIT easier*
 
 # What the shit is this
 
@@ -43,7 +45,7 @@ Since it's currently confusing to do, [here's some prebuilt lib files for use wi
 
 The sole libraries themselves (SDL and SoLoud) are under the zLib/LibPNG licenses ofc, so you'll have to deal with that
 
-# SDFML license
+# SDfmL license
 MIT License
 
 Copyright 2022 haya3218
