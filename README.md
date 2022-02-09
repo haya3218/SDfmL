@@ -45,7 +45,9 @@ Since it's currently confusing to do, [here's some prebuilt lib files for use wi
 
 The sole libraries themselves (SDL and SoLoud) are under the zLib/LibPNG licenses ofc, so you'll have to deal with that
 
-# SDfmL license
+TinySoundfont is under the same license as this wrapper (MIT License)
+
+## SDfmL license
 MIT License
 
 Copyright 2022 haya3218
