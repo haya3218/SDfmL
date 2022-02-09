@@ -1,8 +1,8 @@
 ![bitch](logo.png)
 
-# SDLflixel
+# SDFML
 
-"It's flixel, but in cpp, get gud noob"
+**A basic wrapper meant to make creating SHIT easier**
 
 # What the shit is this
 
@@ -41,9 +41,9 @@ Since it's currently confusing to do, [here's some prebuilt lib files for use wi
 
 # Licensing
 
-The sole libraries themselves (SDL and BASS) are under different licenses ofc, so you'll have to deal with that
+The sole libraries themselves (SDL and SoLoud) are under the zLib/LibPNG licenses ofc, so you'll have to deal with that
 
-# SDLflixel license
+# SDFML license
 MIT License
 
 Copyright 2022 haya3218
