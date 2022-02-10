@@ -11,3 +11,4 @@ lib/x86/*.txt
 bin/*.exe
 bin/*.dll
 bin/log.txt
+bin/conf.toml

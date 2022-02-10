@@ -15,6 +15,7 @@ Stuff like:
 - Rendering functions
 - Object system
 - Sound
+- Configuration
 - and most possibly, more.... idk.
 
 # How the shit to use it den
@@ -45,7 +46,7 @@ Since it's currently confusing to do, [here's some prebuilt lib files for use wi
 
 The sole libraries themselves (SDL and SoLoud) are under the zLib/LibPNG licenses ofc, so you'll have to deal with that
 
-TinySoundfont is under the same license as this wrapper (MIT License)
+TinySoundfont and toml11 under the same license as this wrapper (MIT License)
 
 ## SDfmL license
 MIT License

@@ -21,9 +21,13 @@
 #include <ctime>
 #include <winuser.h>
 
+#include "toml.hpp"
+#include <fstream>
+
 using namespace std;
 using namespace Render;
 
+string SOUNDFONT = "data/gm.sf2";
 SDL_Window* Render::window;
 SDL_Renderer* Render::renderer;
 SDL_Event Render::event;
@@ -202,6 +206,24 @@ bool Render::Init(string window_name) {
     std::ofstream logFile;
     logFile.open("log.txt", std::ofstream::out | std::ofstream::trunc);
     logFile.close();
+
+    // "touch" the file first
+    std::ofstream config;
+    config.open("conf.toml", std::ios::app);
+    config.close();
+    fstream oFile("conf.toml");
+    oFile.seekg(0,std::ios::end);
+	unsigned int size = oFile.tellg();
+	if(!size) {
+        // if file doesnt actually have anything (which it should when the file doesnt exist... yet)
+        std::ofstream config;
+        config.open("conf.toml", std::ios::app);
+        config  << "[config]" << endl
+                << "soundfont = \"data/gm.sf2\"" << endl;
+        config.close();
+    }
+    oFile.close();
+    SOUNDFONT = tomlParse<string>("conf.toml", "config", "soundfont");
     if (se.init() > 0) {
         log("Render.cpp", 202, "SoLoud", " has failed to load. Is your dll broken?", ERROR_);
         return false;
@@ -239,7 +261,7 @@ bool Render::Init(string window_name) {
     }
     log("Render.cpp", 236, "A renderer", " has been created.", NORMAL);
 
-    current_sf.load(SOUNDFONT);
+    current_sf.load(SOUNDFONT.c_str());
 
     SDL_SysWMinfo wmInfo;
     SDL_VERSION(&wmInfo.version);
@@ -338,7 +360,8 @@ bool Render::Update() {
 }
 
 void Render::SwitchState(State* state) {
-    log("Render.cpp", 337, "", "Switching states...");
+    string state_name = typeid(*state).name();
+    log("Render.cpp", 337, "", "Switching current state to " + state_name);
     if (current_state != nullptr) {
         _ticks = {};
         _call = {};

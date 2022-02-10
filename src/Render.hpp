@@ -18,6 +18,9 @@
 #include "SoLoud/soloud_openmpt.h"
 #include "SoLoud/MIDI/soloud_midi.h"
 
+#include "toml.hpp"
+#include <fstream>
+
 using namespace std;
 
 #define WINDOW_WIDTH 640
@@ -27,7 +30,7 @@ using namespace std;
 
 #define MAX_SE 10
 
-#define SOUNDFONT "data/gm.sf2"
+extern string SOUNDFONT;
 
 struct Vector2
 {
@@ -274,6 +277,16 @@ namespace Render {
 
     inline int Sec2Tick(float time) {
         return FRAMERATE*time;
+    }
+
+    template <typename T>
+    T tomlParse(string path, string table_name = "", string key = "") {
+        auto parsed = toml::parse(path);
+        if (table_name != "") {
+            auto& config_table = toml::find(parsed, table_name);
+            return toml::find<T>(config_table, key);
+        }
+        return toml::find<T>(parsed, key);
     }
 }
 #endif

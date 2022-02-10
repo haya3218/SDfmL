@@ -4,10 +4,11 @@ cmake_minimum_required(VERSION 3.8)
 # proj name
 project(Skateboard)
 
-# SDL2 include directories
+# include directories
 set(SDL2_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/src/SDL2/")
 set(OUT_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/")
 set(OUT2_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/MIDI/")
+set(OUT3_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/src/toml/")
 
 # Support both 32 and 64 bit builds
 if (${CMAKE_SIZEOF_VOID_P} MATCHES 8)
@@ -26,6 +27,7 @@ string(STRIP "${MAIN_LIBRARIES}" MAIN_LIBRARIES)
 include_directories(${SDL2_INCLUDE_DIRS})
 include_directories(${OUT_INCLUDE_DIRS})
 include_directories(${OUT2_INCLUDE_DIRS})
+include_directories(${OUT3_INCLUDE_DIRS})
 include_directories(${CMAKE_CURRENT_LIST_DIR}/src)
 
 # add EVERY FUCKING source file to SOURCES
@@ -74,6 +76,7 @@ FILE(GLOB SOURCES "${CMAKE_CURRENT_LIST_DIR}/src/*.cpp"
 "${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/MIDI/tsf.h"
 "${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/MIDI/soloud_midi.h"
 "${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/MIDI/*.cpp"
+"${CMAKE_CURRENT_LIST_DIR}/src/toml/*.hpp"
 )
 
 # set c++ std to 17
