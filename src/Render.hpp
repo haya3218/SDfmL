@@ -304,6 +304,7 @@ namespace Render {
             oFile.close();
             return false;
         }
+        oFile.close();
         return true;
     }
 
