@@ -21,6 +21,12 @@
 #include "toml.hpp"
 #include <fstream>
 
+#ifdef _WIN32 || WIN32
+#define __FILENAME__ (strrchr(__FILE__, '\\') ? strrchr(__FILE__, '\\') + 1 : __FILE__)
+#else
+#define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
+#endif
+
 using namespace std;
 
 #define WINDOW_WIDTH 640
@@ -273,7 +279,38 @@ namespace Render {
     */
     void pointTo(SDL_Rect* camera, Object object);
 
-    void log(string file, int line, string prefix, string msg, LOG_TYPE type = NORMAL);
+    inline void log(string prefix, string msg, LOG_TYPE type = NORMAL, string file = "???.cpp", int line = 0) {
+        clock_t now = std::clock();
+
+        double now_n = (double)now / CLOCKS_PER_SEC;
+
+        string typeName = "LOG";
+
+        switch (type) {
+            case NORMAL:
+                break;
+            case WARNING:
+                typeName = "WARNING";
+                break;
+            case ERROR_:
+                typeName = "ERROR";
+                break;
+        }
+
+        std::stringstream buf;
+
+        buf << (int)(now_n/60) << ":"
+            << std::setfill('0') << std::setw(2) << (int)((int)now_n % 60) << "."
+            << std::setfill('0') << std::setw(3) << (int)((now_n - (int)now_n) * 1000) << " "
+            << typeName << ": (" << file << ":" << line << ") " << prefix << msg << endl;
+
+        std::ofstream logFile;
+        logFile.open("log.txt", std::ios::app);
+        logFile << buf.str();
+        logFile.close();
+
+        cout << buf.str();
+    }
 
     inline int Sec2Tick(float time) {
         return FRAMERATE*time;
