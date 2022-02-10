@@ -207,22 +207,13 @@ bool Render::Init(string window_name) {
     logFile.open("log.txt", std::ofstream::out | std::ofstream::trunc);
     logFile.close();
 
-    // "touch" the file first
-    std::ofstream config;
-    config.open("conf.toml", std::ios::app);
-    config.close();
-    fstream oFile("conf.toml");
-    oFile.seekg(0,std::ios::end);
-	unsigned int size = oFile.tellg();
-	if(!size) {
-        // if file doesnt actually have anything (which it should when the file doesnt exist... yet)
-        std::ofstream config;
-        config.open("conf.toml", std::ios::app);
-        config  << "[config]" << endl
-                << "soundfont = \"data/gm.sf2\"" << endl;
-        config.close();
+    if (!touchFile("conf.toml"))
+    {
+        tomlExport("conf.toml", 
+        {
+            {"config", {{"soundfont", "data/gm.sf2"}}}
+        });
     }
-    oFile.close();
     SOUNDFONT = tomlParse<string>("conf.toml", "config", "soundfont");
     if (se.init() > 0) {
         log("Render.cpp", 202, "SoLoud", " has failed to load. Is your dll broken?", ERROR_);

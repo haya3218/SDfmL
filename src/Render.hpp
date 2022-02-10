@@ -279,6 +279,8 @@ namespace Render {
         return FRAMERATE*time;
     }
 
+    // Parse a TOML at a given path with a table and key.
+    // Setting table name to "" will look for the key without a table.
     template <typename T>
     T tomlParse(string path, string table_name = "", string key = "") {
         auto parsed = toml::parse(path);
@@ -287,6 +289,31 @@ namespace Render {
             return toml::find<T>(config_table, key);
         }
         return toml::find<T>(parsed, key);
+    }
+
+    // "touch" a file at a given path.
+    // Returns false if file is empty, returns true if not
+    inline bool touchFile(string path) {
+        std::ofstream file;
+        file.open(path, std::ios::app);
+        file.close();
+        fstream oFile(path);
+        oFile.seekg(0,std::ios::end);
+        unsigned int size = oFile.tellg();
+        if (!size) {
+            oFile.close();
+            return false;
+        }
+        return true;
+    }
+
+    // Export a TOML file to a path from a toml::value.
+    inline void tomlExport(string path, toml::value values) {
+        string export_ = toml::format(values, 0, 2);
+        std::ofstream config;
+        config.open(path, std::ofstream::out | std::ofstream::trunc);
+        config << export_ << endl;
+        config.close();
     }
 }
 #endif
