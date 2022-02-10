@@ -17,6 +17,11 @@
 #include "SoLoud/soloud_wavstream.h"
 #include "SoLoud/soloud_openmpt.h"
 #include "SoLoud/MIDI/soloud_midi.h"
+#include "SoLoud/soloud_speech.h"
+#include "SoLoud/soloud_vizsn.h"
+#include "SoLoud/soloud_waveshaperfilter.h"
+#include "SoLoud/soloud_biquadresonantfilter.h"
+#include "SoLoud/soloud_fftfilter.h"
 
 #include "toml.hpp"
 #include <fstream>
@@ -352,6 +357,29 @@ namespace Render {
         config.open(path, std::ofstream::out | std::ofstream::trunc);
         config << export_ << endl;
         config.close();
+    }
+
+    // SPEAK you fucking BITCH
+    extern SoLoud::Speech SPEAK_BITCH;
+
+    extern SoLoud::FFTFilter bass;
+
+    static HMENU exitButton;
+
+    // makes A BITCH SPEAK out shit
+    inline void SPEAK(string words, unsigned int aBaseFrequency = 3000.0f, float aBaseSpeed = 10.0f, float aBaseDeclination = 0.5f, int aBaseWaveform = KW_SQUARE) {
+        SPEAK_BITCH.setFilter(1, &bass);
+        SPEAK_BITCH.setParams(aBaseFrequency, aBaseSpeed, aBaseDeclination, aBaseWaveform);
+        SPEAK_BITCH.setVolume(5.0);
+        SPEAK_BITCH.setText(words.c_str());
+        seIndex = se.play(SPEAK_BITCH);
+    }
+
+    inline void AddExitButton() {
+        exitButton = CreateMenu();
+
+        AppendMenu(exitButton, MF_STRING, 1, "Exit");
+        SetMenu(hwnd, exitButton);
     }
 }
 #endif

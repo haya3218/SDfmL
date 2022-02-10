@@ -42,6 +42,8 @@ string Render::currentMusic = "";
 HWND Render::hwnd;
 HWND Render::consoleD;
 int Render::seIndex;
+SoLoud::Speech Render::SPEAK_BITCH;
+SoLoud::FFTFilter Render::bass;
 
 Render::Object::Object() {
     
@@ -261,6 +263,10 @@ bool Render::Init(string window_name) {
 
     log("", "Finalized initialization. Command over.", NORMAL, __FILENAME__, __LINE__);
 
+    AddExitButton();
+
+    SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
+
     return true;
 }
 
@@ -285,6 +291,16 @@ bool Render::Update() {
             if(event.type == SDL_QUIT) {
                 run = false;
                 break;
+            }
+            else if (event.type == SDL_SYSWMEVENT) {
+                if (event.syswm.msg->msg.win.msg == WM_COMMAND)
+                {
+                    if (LOWORD(event.syswm.msg->msg.win.wParam) == 1)
+                    {
+                        run = false;
+                        break;
+                    }
+                }
             }
         }
 
