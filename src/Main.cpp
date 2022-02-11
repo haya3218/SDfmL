@@ -151,11 +151,12 @@ int main(int argc, char* argv[])
         return EXIT_FAILURE;
     }
 
-    RedirectIOToConsole();
-
     parser pa(argc, argv);
-    if (pa[{"-v", "--verbose"}])
+    // Verbose redirects io output to console, if available
+    if (pa[{"-v", "--verbose"}]) {
+        RedirectIOToConsole();
         log("", "Verbose mode enabled.", NORMAL, __FILENAME__, __LINE__);
+    }
 
     SwitchState(&m);
 
