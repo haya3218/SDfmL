@@ -17,6 +17,7 @@ Stuff like:
 - Sound
 - Configuration
 - and most possibly, more.... idk.
+- Less dll binary clutter!
 
 # How the shit to use it den
 
@@ -25,13 +26,13 @@ MingW, or GCC.
 
 ## Requirements
 - CMake, to build the damn thing
-- SDL2, SDL_image 2.0, and SDL_ttf 2.0, duh
+- SDL2 and SDL_ttf 2.0, duh
 - SoLoud (static library)
 - A VC++ (MSVC) compiler that atleast supports C++ std 17
 
 To use it (in windows atleast),
 
-- Get SDL2, SDL_image 2.0, and SDL_ttf 2.0, and put em on the respective x86 and x64 folders.
+- Get SDL2 and SDL_ttf 2.0, and put em on the respective x86 and x64 folders.
 You know how to place them. It's fucking common sense.
 - [SoLoud.](https://sol.gfxile.net/soloud/index.html) Follow GENie instructions and build as a static library.
 Since it's currently confusing to do, [here's some prebuilt lib files for use with this wrapper.](https://cdn.discordapp.com/attachments/872338952483381258/940791426797686804/SoLoud_Static.zip)
@@ -44,7 +45,9 @@ Since it's currently confusing to do, [here's some prebuilt lib files for use wi
 
 # Licensing
 
-The sole libraries themselves (SDL and SoLoud) are under the zLib/LibPNG licenses ofc, so you'll have to deal with that
+The sole libraries themselves (SDL, SoLoud) are under the zLib/LibPNG licenses ofc, so you'll have to deal with that
+
+stb_image is under the Public Domain/MIT.
 
 TinySoundfont and toml11 under the same license as this wrapper (MIT License)
 
