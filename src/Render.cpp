@@ -425,7 +425,9 @@ bool Render::playModPlug(string path) {
         return true;
     }
     log("", "Played mod tracker from " + path, NORMAL, __FILENAME__, __LINE__);
-    modLoader.load(path.c_str());
+    if (modLoader.load(path.c_str()) != SoLoud::SO_NO_ERROR) {
+        log("", "Could not play " + path, NORMAL, __FILENAME__, __LINE__);
+    }
     modLoader.setLooping(true);
     music.play(modLoader);
     currentMusic = path;

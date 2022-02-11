@@ -19,10 +19,15 @@
 #include <stdlib.h>
 #include "argh.h"
 #include "guicon.h"
+#include <random>
 
 using namespace std;
 using namespace Render;
 using namespace argh;
+
+bool randomBool() {
+   return rand() % 2;
+}
 
 class MainState : public State {
     AnimatedObject objs;
@@ -38,7 +43,13 @@ class MainState : public State {
     // before it
     virtual void Create() {
         // SPEAK("eyeyeyayeyayeyaeyaeyayeayeyaeyaeyayeyaeyayeyayeyayeyayeaye", 3000.0f, 5.0f);
-        playModPlug("data/canyon.mid");
+        srand(time(0));
+        if (randomBool())
+            playModPlug("data/canyon.mid");
+        else
+        {
+            playModPlug("data/solarbeams.xm");
+        }
         // i know that this isnt the best idea to do this
         // yeah, im just lazy
         title.create(0, 0, "data/bg.png");

@@ -21,7 +21,6 @@ else ()
   set(MAIN_LIBRARIES_E "${CMAKE_CURRENT_LIST_DIR}/lib/x86/")
 endif ()
 
-
 # strip it all
 string(STRIP "${MAIN_LIBRARIES}" MAIN_LIBRARIES)
 
@@ -35,7 +34,6 @@ include_directories(${CMAKE_CURRENT_LIST_DIR}/src)
 # add EVERY FUCKING source file to SOURCES
 FILE(GLOB SOURCES "${CMAKE_CURRENT_LIST_DIR}/src/*.cpp" 
 "${CMAKE_CURRENT_LIST_DIR}/src/*.hpp"  
-"${CMAKE_CURRENT_LIST_DIR}/src/*.c"  
 "${CMAKE_CURRENT_LIST_DIR}/src/*.h"  
 "${CMAKE_CURRENT_LIST_DIR}/src/SDL2/*.c"  
 "${CMAKE_CURRENT_LIST_DIR}/src/SDL2/*.h"  
