@@ -14,10 +14,10 @@ set(OUT3_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/src/toml/")
 # Someone make a pull request to support MingW
 # Way to lazy to do that right now
 if (${CMAKE_SIZEOF_VOID_P} MATCHES 8)
-  set(MAIN_LIBRARIES "${CMAKE_CURRENT_LIST_DIR}/lib/x64/soloud_static.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x64/SDL2.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x64/SDL2main.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x64/SDL2_ttf.lib")
+  set(MAIN_LIBRARIES "${CMAKE_CURRENT_LIST_DIR}/lib/x64/soloud_static.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x64/SDL2.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x64/SDL2_ttf.lib")
   set(MAIN_LIBRARIES_E "${CMAKE_CURRENT_LIST_DIR}/lib/x64/")
 else ()
-  set(MAIN_LIBRARIES "${CMAKE_CURRENT_LIST_DIR}/lib/x86/soloud_static.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x86/SDL2.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x86/SDL2main.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x86/SDL2_ttf.lib")
+  set(MAIN_LIBRARIES "${CMAKE_CURRENT_LIST_DIR}/lib/x86/soloud_static.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x86/SDL2.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x86/SDL2_ttf.lib")
   set(MAIN_LIBRARIES_E "${CMAKE_CURRENT_LIST_DIR}/lib/x86/")
 endif ()
 
@@ -85,7 +85,7 @@ FILE(GLOB SOURCES "${CMAKE_CURRENT_LIST_DIR}/src/*.cpp"
 set(CMAKE_CXX_STANDARD 17)
 
 # edit executable properties part 1
-add_executable(Skateboard ${SOURCES} "${CMAKE_CURRENT_SOURCE_DIR}/resources/res.rc")
+add_executable(Skateboard WIN32 ${SOURCES} "${CMAKE_CURRENT_SOURCE_DIR}/resources/res.rc")
 
 # LINK EVERYTHING
 target_link_libraries(Skateboard ${MAIN_LIBRARIES})
