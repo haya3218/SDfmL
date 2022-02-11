@@ -9,7 +9,6 @@
 #include <vector>
 #include <string>
 #include "SDL2/SDL.h"
-#include "SDL2/SDL_image.h"
 #include "SDL2/SDL_ttf.h"
 #include "Render.hpp"
 #include "SDL2/SDL_syswm.h"
@@ -17,6 +16,8 @@
 #include "SoLoud/soloud_wav.h"
 #include "SoLoud/soloud_openmpt.h"
 #include <iomanip>
+
+#include "SDL2/SDL_stbimage.h"
 
 #include <ctime>
 #include <winuser.h>
@@ -62,7 +63,7 @@ Render::State::~State() {
 }
 
 void Render::Object::create(int x, int y, string path){
-    this->_tex = IMG_LoadTexture(renderer, path.c_str());
+    this->_tex = STBIMG_LoadTexture(renderer, path.c_str());
     SDL_SetTextureBlendMode(_tex, SDL_BLENDMODE_BLEND);
     if (_tex == nullptr) {
         cout << "texture failed to lod" << endl;
@@ -231,11 +232,6 @@ bool Render::Init(string window_name) {
         return false;
     }
     log("SDL", " has been successfully initialized.", NORMAL, __FILENAME__, __LINE__);
-    if (IMG_Init(IMG_INIT_PNG) == 0) {
-        log("SDL_image", " has failed to load. Is your dll broken? " + string(SDL_GetError()), ERROR_, __FILENAME__, __LINE__);
-        return false;
-    }
-    log("SDL_image", " has been successfully initialized.", NORMAL, __FILENAME__, __LINE__);
     if (TTF_Init() < 0) {
         log("SDL_ttf", " has failed to load. Is your dll broken? " + string(SDL_GetError()), ERROR_, __FILENAME__, __LINE__);
         return false;
@@ -359,7 +355,6 @@ bool Render::Update() {
     music.stopAll();
     se.deinit();
     music.deinit();
-    IMG_Quit();
     TTF_Quit();
     SDL_Quit();
 

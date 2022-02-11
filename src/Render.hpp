@@ -23,6 +23,8 @@
 #include "SoLoud/soloud_biquadresonantfilter.h"
 #include "SoLoud/soloud_fftfilter.h"
 
+#include "SDL2/SDL_stbimage.h"
+
 #include "toml.hpp"
 #include <fstream>
 

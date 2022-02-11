@@ -1,4 +1,5 @@
 #define SDL_MAIN_HANDLED // needs to be here or linker fucking dies
+#define SDL_STBIMAGE_IMPLEMENTATION
 #undef _HAS_STD_BYTE
 #include <iostream>
 #include "SDL2/SDL.h"
@@ -22,7 +23,7 @@ class MainState : public State {
     // to override a function, just state back the name of it with a virtual keyword
     // before it
     virtual void Create() {
-        SPEAK("Welcome, to es dee eff emm L. A stupid fucking wrapper for ess dee L 2. Get over it, bitch", 3000.0f, 6.5f);
+        // SPEAK("eyeyeyayeyayeyaeyaeyayeayeyaeyaeyayeyaeyayeyayeyayeyayeaye", 3000.0f, 5.0f);
         playModPlug("data/canyon.mid");
         // i know that this isnt the best idea to do this
         // yeah, im just lazy
