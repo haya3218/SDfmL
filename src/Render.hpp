@@ -28,6 +28,8 @@
 #include "toml.hpp"
 #include <fstream>
 
+#include "guicon.h"
+
 #ifdef _WIN32 || WIN32
 #define __FILENAME__ (strrchr(__FILE__, '\\') ? strrchr(__FILE__, '\\') + 1 : __FILE__)
 #else

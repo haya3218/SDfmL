@@ -204,8 +204,6 @@ void Render::Object::centerSelf(AXIS axis) {
 }
 
 bool Render::Init(string window_name) {
-    consoleD = GetConsoleWindow();
-    SetWindowTextA(consoleD, "Logging window");
     std::ofstream logFile;
     logFile.open("log.txt", std::ofstream::out | std::ofstream::trunc);
     logFile.close();
@@ -300,8 +298,6 @@ bool Render::Update() {
             }
         }
 
-        SetWindowTextA(consoleD, "Logging window");
-
         int start = SDL_GetPerformanceCounter();
 
         int current = SDL_GetTicks();
@@ -357,6 +353,7 @@ bool Render::Update() {
     music.deinit();
     TTF_Quit();
     SDL_Quit();
+    ReleaseConsole();
 
     return false;
 }

@@ -18,6 +18,7 @@
 #include <Windows.h>
 #include <stdlib.h>
 #include "argh.h"
+#include "guicon.h"
 
 using namespace std;
 using namespace Render;
@@ -149,6 +150,8 @@ int main(int argc, char* argv[])
     if (!Init("SDfmL :))))))")){
         return EXIT_FAILURE;
     }
+
+    RedirectIOToConsole();
 
     parser pa(argc, argv);
     if (pa[{"-v", "--verbose"}])
