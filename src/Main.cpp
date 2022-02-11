@@ -1,6 +1,16 @@
-#define SDL_MAIN_HANDLED // needs to be here or linker fucking dies
-#define SDL_STBIMAGE_IMPLEMENTATION
-#undef _HAS_STD_BYTE
+/**
+ * @file Main.cpp
+ * @author haya3218
+ * @brief This is an example on how to use SDfmL. Code may suck. beware
+ * @version 0.1
+ * @date 2022-02-11
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
+#define SDL_MAIN_HANDLED // needs to be here so that SDL doesnt hijack our main function
+#define SDL_STBIMAGE_IMPLEMENTATION // to use sdl_stbimage
+#undef _HAS_STD_BYTE // avoid std::byte hijacking native byte type
 #include <iostream>
 #include "SDL2/SDL.h"
 #include "Render.hpp"
@@ -132,7 +142,7 @@ class SplashScreen : public State {
 SplashScreen m;
 
 int main() {
-    if (!Init("SDLflixel :)))))")){
+    if (!Init("SDfmL :))))))")){
         return ERROR_CODE;
     }
 
