@@ -28,7 +28,7 @@ To use it (in windows atleast),
 You know how to place them. It's fucking common sense.
 - [SoLoud.](https://sol.gfxile.net/soloud/index.html) Follow GENie instructions and build as a static library.
 - If you are gonna be using the OpenMPT module, you'll need the libopenmpt dll in your exe directory as well.
-- Prebuilt binaries (with OpenMPT) are [here.](https://cdn.discordapp.com/attachments/872338952483381258/942267595824967690/fixed.7z)
+- Prebuilt binaries (with OpenMPT) are [here.](https://cdn.discordapp.com/attachments/872338952483381258/942306540159909918/libraries.7z)
 - Clone the dam repo somewhere on ur machine.
 - Go to where you cloned it, and run `cmake -B build -DCMAKE_BUILD_TYPE=Release`
 - After successfully making the build files, run `cmake --build --config Release` to build it without the use of VStudio.
