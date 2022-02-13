@@ -14,10 +14,10 @@ set(OUT3_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/src/toml/")
 # Someone make a pull request to support MingW
 # Way to lazy to do that right now
 if (${CMAKE_SIZEOF_VOID_P} MATCHES 8)
-  set(MAIN_LIBRARIES "${CMAKE_CURRENT_LIST_DIR}/lib/x64/soloud_static.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x64/SDL2.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x64/SDL2_ttf.lib")
+  set(MAIN_LIBRARIES "${CMAKE_CURRENT_LIST_DIR}/lib/x64/libmodplug.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x64/soloud_static.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x64/SDL2.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x64/SDL2_ttf.lib")
   set(MAIN_LIBRARIES_E "${CMAKE_CURRENT_LIST_DIR}/lib/x64/")
 else ()
-  set(MAIN_LIBRARIES "${CMAKE_CURRENT_LIST_DIR}/lib/x86/soloud_static.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x86/SDL2.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x86/SDL2_ttf.lib")
+  set(MAIN_LIBRARIES "${CMAKE_CURRENT_LIST_DIR}/lib/x86/libmodplug.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x86/soloud_static.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x86/SDL2.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x86/SDL2_ttf.lib")
   set(MAIN_LIBRARIES_E "${CMAKE_CURRENT_LIST_DIR}/lib/x86/")
 endif ()
 
@@ -76,5 +76,6 @@ file(REMOVE_RECURSE "${BUILD_DIRECTORY}/SDL2_ttf.lib")
 file(REMOVE_RECURSE "${BUILD_DIRECTORY}/SDL2main.lib")
 file(REMOVE_RECURSE "${BUILD_DIRECTORY}/SDL2test.lib")
 file(REMOVE_RECURSE "${BUILD_DIRECTORY}/soloud_static.lib")
+file(REMOVE_RECURSE "${BUILD_DIRECTORY}/libmodplug.lib")
 
 # :)

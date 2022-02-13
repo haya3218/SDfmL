@@ -264,6 +264,7 @@ namespace Render {
     extern SoLoud::Soloud music;
     extern SoLoud::WavStream waveLoader;
     extern SoLoud::Openmpt modLoader;
+    extern SoLoud::Modplug modPlugLoader;
     extern SoLoud::Midi midiLoader;
     extern SoLoud::SoundFont current_sf;
     extern string currentMusic;
@@ -280,6 +281,7 @@ namespace Render {
     /*
     * Play music thru the openMPT api (669, amf, ams, dbm, digi, dmf, dsm, far, gdm, ice, imf, it, itp, j2b, m15, mdl, med, mo3, mod, mptm, mt2, mtm, okt, plm, psm, ptm, s3m, stm, ult, umx, wow, xm). Always loops.
     * When a midi is passed (mid), it will use a TSF-based midi loader instead.
+    * If libopenmpt fails to load, it will resort to the libmodplug api instead.
     * Passing a blank string (e.g. "") will stop the current playing music.
     */
     bool playModPlug(string path); 

@@ -37,6 +37,7 @@ SoLoud::Soloud Render::music;
 SoLoud::Soloud Render::se;
 SoLoud::WavStream Render::waveLoader;
 SoLoud::Openmpt Render::modLoader;
+SoLoud::Modplug Render::modPlugLoader;
 SoLoud::Midi Render::midiLoader;
 SoLoud::SoundFont Render::current_sf;
 string Render::currentMusic = "";
@@ -216,10 +217,6 @@ bool Render::Init(string window_name) {
         });
     }
     SOUNDFONT = tomlParse<string>("conf.toml", "config", "soundfont");
-    if (se.init() > 0) {
-        log("SoLoud", " has failed to load. Is your dll broken?", ERROR_, __FILENAME__, __LINE__);
-        return false;
-    }
     if (music.init() > 0) {
         log("SoLoud", " has failed to load. Is your dll broken?", ERROR_, __FILENAME__, __LINE__);
         return false;
@@ -235,7 +232,7 @@ bool Render::Init(string window_name) {
         return false;
     }
     log("SDL_ttf", " has been successfully initialized.", NORMAL, __FILENAME__, __LINE__);
-    window = SDL_CreateWindow(window_name.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_OPENGL|SDL_WINDOW_SHOWN);
+    window = SDL_CreateWindow(window_name.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
     if (window == nullptr) {
         log("A window", " failed to be created. " + string(SDL_GetError()), ERROR_, __FILENAME__, __LINE__);
         return false;
@@ -347,9 +344,7 @@ bool Render::Update() {
     }
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
-    se.stopAll();
     music.stopAll();
-    se.deinit();
     music.deinit();
     TTF_Quit();
     SDL_Quit();
@@ -379,10 +374,10 @@ bool Render::playSound(string path, bool override) {
     log("", "Played sound from " + path, NORMAL, __FILENAME__, __LINE__);
     waveLoader.setLooping(false);
     if (override) {
-        se.stop(seIndex);
+        music.stop(seIndex);
     }
     waveLoader.load(path.c_str());
-    seIndex = se.play(waveLoader);
+    seIndex = music.play(waveLoader);
     
     return true;
 }
@@ -424,9 +419,18 @@ bool Render::playModPlug(string path) {
 
         return true;
     }
-    log("", "Played mod tracker from " + path, NORMAL, __FILENAME__, __LINE__);
+    log("", "Try to play " + path + " using libopenmpt", NORMAL, __FILENAME__, __LINE__);
     if (modLoader.load(path.c_str()) != SoLoud::SO_NO_ERROR) {
-        log("", "Could not play " + path, NORMAL, __FILENAME__, __LINE__);
+        log("", "Playing " + path + " using libmodplug", NORMAL, __FILENAME__, __LINE__);
+        if (modPlugLoader.load(path.c_str()) != SoLoud::SO_NO_ERROR) {
+            log("", "Could not play " + path, NORMAL, __FILENAME__, __LINE__);
+            return false;
+        }
+        modPlugLoader.setLooping(true);
+        music.play(modPlugLoader);
+        currentMusic = path;
+
+        return true;
     }
     modLoader.setLooping(true);
     music.play(modLoader);
