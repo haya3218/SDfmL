@@ -187,9 +187,9 @@ namespace SoLoud
 		time mLoopPoint;
 
 		// Get N samples from the stream to the buffer. Report samples written.
-		virtual unsigned int getAudio(float *aBuffer, unsigned int aSamplesToRead, unsigned int aBufferSize) = 0;
+		virtual unsigned int getAudio(float *aBuffer, unsigned int aSamplesToRead, unsigned int aBufferSize);
 		// Has the stream ended?
-		virtual bool hasEnded() = 0;
+		virtual bool hasEnded();
 		// Seek to certain place in the stream. Base implementation is generic "tape" seek (and slow).
 		virtual result seek(time aSeconds, float *mScratch, unsigned int mScratchSize);
 		// Rewind stream. Base implementation returns NOT_IMPLEMENTED, meaning it can't rewind.
@@ -306,7 +306,7 @@ namespace SoLoud
 		// DTor
 		virtual ~AudioSource();
 		// Create instance from the audio source. Called from within Soloud class.
-		virtual AudioSourceInstance *createInstance() = 0;
+		virtual AudioSourceInstance *createInstance();
 		// Stop all instances of this audio source
 		void stop();
 	};

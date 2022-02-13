@@ -15,6 +15,7 @@
 #include "SoLoud/soloud.h"
 #include "SoLoud/soloud_wav.h"
 #include "SoLoud/soloud_wavstream.h"
+#include "SoLoud/soloud_modplug.h"
 #include "SoLoud/soloud_openmpt.h"
 #include "SoLoud/MIDI/soloud_midi.h"
 #include "SoLoud/soloud_speech.h"
