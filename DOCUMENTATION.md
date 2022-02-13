@@ -26,7 +26,7 @@ To use it (in windows atleast),
 
 - Get SDL2 and SDL_ttf 2.0, and put em on the respective x86 and x64 folders.
 You know how to place them. It's fucking common sense.
-- [SoLoud.](https://sol.gfxile.net/soloud/index.html) Follow GENie instructions and build as a static library.
+- [SoLoud fork.](https://github.com/haya3218/soloud) Follow GENie instructions and build as a static library.
 - If you are gonna be using the OpenMPT module, you'll need the libopenmpt dll in your exe directory as well.
 - Prebuilt binaries (with OpenMPT) are [here.](https://cdn.discordapp.com/attachments/872338952483381258/942306540159909918/libraries.7z)
 - Clone the dam repo somewhere on ur machine.
