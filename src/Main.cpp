@@ -48,7 +48,7 @@ class MainState : public State {
             playModPlug("data/canyon.mid");
         else
         {
-            playModPlug("data/solarbeams.xm");
+            playModPlug("data/DOPE.MOD");
         }
         // i know that this isnt the best idea to do this
         // yeah, im just lazy
