@@ -1,6 +1,6 @@
 /*
-libmodplug module for SoLoud audio engine, fixed
-Copyright (c) 2014 Jari Komppa, 2022 haya
+libmodplug module for SoLoud audio engine
+Copyright (c) 2014 Jari Komppa
 
 This software is provided 'as-is', without any express or implied
 warranty. In no event will the authors be held liable for any damages
@@ -41,7 +41,7 @@ namespace SoLoud
 	public:
 		ModplugInstance(Modplug *aParent);
 		virtual ~ModplugInstance();
-		virtual void getAudio(float *aBuffer, unsigned int aSamples);
+		virtual unsigned int getAudio(float *aBuffer, unsigned int aSamplesToRead, unsigned int aBufferSize);
 		virtual bool hasEnded();
 		virtual void mpInit(Modplug *aParent);
 	};
