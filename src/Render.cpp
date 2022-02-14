@@ -39,6 +39,7 @@ SoLoud::WavStream Render::waveLoader;
 SoLoud::Openmpt Render::modLoader;
 SoLoud::Modplug Render::modPlugLoader;
 SoLoud::Midi Render::midiLoader;
+SoLoud::WavStream Render::sfxLoader;
 SoLoud::SoundFont Render::current_sf;
 string Render::currentMusic = "";
 HWND Render::hwnd;
@@ -372,12 +373,12 @@ void Render::SwitchState(State* state) {
 
 bool Render::playSound(string path, bool override) {
     log("", "Played sound from " + path, NORMAL, __FILENAME__, __LINE__);
-    waveLoader.setLooping(false);
+    sfxLoader.setLooping(false);
     if (override) {
         music.stop(seIndex);
     }
-    waveLoader.load(path.c_str());
-    seIndex = music.play(waveLoader);
+    sfxLoader.load(path.c_str());
+    seIndex = music.play(sfxLoader);
     
     return true;
 }

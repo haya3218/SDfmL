@@ -263,6 +263,7 @@ namespace Render {
     extern SoLoud::Soloud se;
     extern SoLoud::Soloud music;
     extern SoLoud::WavStream waveLoader;
+    extern SoLoud::WavStream sfxLoader;
     extern SoLoud::Openmpt modLoader;
     extern SoLoud::Modplug modPlugLoader;
     extern SoLoud::Midi midiLoader;
