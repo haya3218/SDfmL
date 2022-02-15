@@ -34,6 +34,8 @@
 
 #include "guicon.h"
 
+#include "sdfml/music.hpp"
+
 #ifdef _WIN32
 #define __FILENAME__ (strrchr(__FILE__, '\\') ? strrchr(__FILE__, '\\') + 1 : __FILE__)
 #else
@@ -135,8 +137,6 @@ namespace sdfml {
     };
 
     static context mContext;
-
-    static SoLoud::Soloud audio;
     static SoLoud::SoundFont sf;
 
     class sdSprite {
@@ -163,8 +163,8 @@ namespace sdfml {
                 _w = width*scale.x;
                 _h = height*scale.y;
 
-                _sc.x = _x-_cam.pos.x;
-                _sc.y = _y-_cam.pos.y;
+                _sc.x = _x-_camera->x;
+                _sc.y = _y-_camera->y;
                 _sc.w = _w;
                 _sc.h = _h;
 
@@ -193,37 +193,39 @@ namespace sdfml {
             virtual void src_rect(SDL_Rect rect) {
                 _src_rect = rect;
             }
-            virtual void updateCamera(sdCam camera) {
-                _cam = camera;
+            virtual void updateCamera(SDL_Rect* camera) {
+                _camera = camera;
             }
         private:
             int _x, _y, _w, _h;
 
             SDL_Rect _sc;
             SDL_Rect _src_rect = {0, 0, 0, 0};
+            SDL_Rect dummy = {0, 0, 0, 0};
             sdCam _cam;
+            SDL_Rect* _camera = &dummy;
             SDL_Texture* _tex;
     };
 
-    inline void focusCamera(sdCam* camera, sdSprite sprite) {
-        camera->pos.x = ( sprite.x + (sprite.width / 2) ) - mContext.size.x / 2;
-        camera->pos.y = ( sprite.y + (sprite.height / 2) ) - mContext.size.y / 2;
+    inline void focusCamera(SDL_Rect* camera, sdSprite sprite) {
+        camera->x = ( sprite.x + (sprite.width / 2) ) - mContext.size.x / 2;
+        camera->y = ( sprite.y + (sprite.height / 2) ) - mContext.size.y / 2;
 
-        if( camera->pos.x < 0 )
+        if( camera->x < 0 )
         { 
-            camera->pos.x = 0;
+            camera->x = 0;
         }
-        if( camera->pos.y < 0 )
+        if( camera->y < 0 )
         {
-            camera->pos.y = 0;
+            camera->y = 0;
         }
-        if( camera->pos.x > camera->size.x )
+        if( camera->x > camera->w )
         {
-            camera->pos.x = camera->size.x;
+            camera->x = camera->w;
         }
-        if( camera->pos.y > camera->size.y )
+        if( camera->y > camera->h )
         {
-            camera->pos.y = camera->size.y;
+            camera->y = camera->h;
         }
     }
 
@@ -359,8 +361,7 @@ namespace sdfml {
             });
         soundfont = tomlParse<string>("conf.toml", "config", "soundfont");
 
-        if (audio.init() > 0)
-            return llog("SoLoud", " has failed to initialize.", ERROR_, __FILENAME__, __LINE__);
+        sound.init();
         llog("SoLoud", " is now initialized.", NORMAL, __FILENAME__, __LINE__);
         if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
             return llog("SDL", " has failed to initialize.", ERROR_, __FILENAME__, __LINE__);
@@ -390,6 +391,24 @@ namespace sdfml {
         return llog("", "Fully finalized initialization. Command over.", NORMAL, __FILENAME__, __LINE__);
     }
 
+    template <typename T>
+    using Func = std::function<T()>;
+
+    static vector<float> _sec;
+    static vector<Func<int>> _call;
+    static vector<bool> _repeats;
+    static vector<int> _ticks;
+
+    class sdTimer {
+        public:
+            void start(float seconds, Func<int> callback, bool repeat = false) {
+                _sec.push_back(seconds);
+                _call.push_back(callback);
+                _repeats.push_back(repeat);
+                _ticks.push_back(0);
+            }
+    };
+
     static const Uint8* kb;
     static const Uint8* kb_last;
 
@@ -409,6 +428,10 @@ namespace sdfml {
         if (kb[code])
             return true;
         return false;
+    }
+
+    inline int Sec2Tick(float time) {
+        return FRAMERATE*time;
     }
 
     inline int update() {
@@ -431,6 +454,32 @@ namespace sdfml {
 
             if (curState != nullptr)
                 curState->update(dT);
+
+            // I know this is a shitty way to do this
+            // but bear with me
+            // it was hard to work with lambdas properly man
+            // let me have this just one please :)
+            if (_sec.size() > 0) {
+                for (int i = 0; i < _sec.size(); i++) {
+                    if (_ticks[i] != -1)
+                        _ticks[i]++;
+
+                    if (_sec[i] != -1) {
+                        if (!(_ticks[i] < Sec2Tick(_sec[i]))) {
+                            if (_call[i] != NULL)
+                                _call[i]();
+                            if (!_repeats[i] && _repeats[i] != NULL)
+                            {
+                                _ticks[i] = -1;
+                                _sec[i] = -1;
+                                _call[i] = NULL;
+                                _repeats[i] = NULL;
+                            }
+                        }
+                    }
+                    // cout << i << endl;
+                }
+            }
 
             lastUpdate = current;
 
@@ -458,8 +507,8 @@ namespace sdfml {
         }
         SDL_DestroyRenderer(mContext.renderer);
         SDL_DestroyWindow(mContext.window);
-        audio.stopAll();
-        audio.deinit();
+        sound.deinit();
+        ReleaseConsole();
         TTF_Quit();
         SDL_Quit();
 
@@ -467,39 +516,24 @@ namespace sdfml {
     }
 
     inline void switchState(sdState* state) {
+        if (curState != nullptr) {
+            _ticks = {};
+            _call = {};
+            _repeats = {};
+            _sec = {};
+            if (curState->get_spr().size() > 0) {
+                for (auto texture : curState->get_spr()) {
+                    texture->destroy();
+                }
+            }
+            if (curState->get_mspr().size() > 0) {
+                for (auto texture : curState->get_mspr()) {
+                    texture.destroy();
+                }
+            }
+        }
         curState = state;
         curState->create();
     }
-
-    static pair<string, int> curMusic = pair<string, int>("", 0);
-
-    class musplayer {
-        public:
-            SoLoud::WavStream wav;
-            SoLoud::WavStream sfxWav;
-            SoLoud::Openmpt mod;
-
-            void playSFX(string path) {
-                //audio.stopAudioSource(sfxWav);
-                sfxWav.load(path.c_str());
-                audio.play(sfxWav);
-            }
-
-            void playMus(string path, bool loop = true) {
-                audio.stopAudioSource(wav);
-                wav.load(path.c_str());
-                wav.setLooping(loop);
-                curMusic.second = audio.playBackground(wav);
-                curMusic.first = path;
-            }
-
-            void playMod(string path, bool loop = true) {
-                //audio.stopAudioSource(mod);
-                mod.load(path.c_str());
-                mod.setLooping(loop);
-                curMusic.second = audio.playBackground(mod);
-                curMusic.first = path;
-            }
-    };
 }
 #endif

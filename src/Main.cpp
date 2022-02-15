@@ -24,19 +24,17 @@
 
 class ExampleState : public sdfml::sdState {
     public:
-        sdfml::musplayer pl;
         sdfml::sdAnimatedSprite example;
-        sdfml::sdCam camera;
+        sdfml::sdSprite bg1;
+        SDL_Rect camera = {0, 0, 640, 480};
         // vector<sdfml::sdSprite> bgs;
         virtual void create() {
-            camera.pos = {0, 0};
-            camera.size = {sdfml::mContext.size.x, sdfml::mContext.size.y};
             example.create(50, 50, "data/images/smile.png");
             example.AddAnimation("idle", {{0, 0, 50, 50}, {50, 0, 50, 50}});
             example.PlayAnimation("idle");
             example.framerate = 1;
-            //example.attachCamera(camera);
-            pl.playSFX("data/sounds/puch.wav");
+            sdfml::sound.music.playMod("data/music/DOPE.it");
+            example.updateCamera(&camera);
             add(&example);
         }
         virtual void update(float elapsed) {
@@ -49,8 +47,7 @@ class ExampleState : public sdfml::sdState {
             if (sdfml::key_pressed(SDL_SCANCODE_DOWN))
                 example.y += 1;
 
-            //sdfml::focusCamera(&camera, example);
-            //example.updateCamera(camera);
+            sdfml::focusCamera(&camera, example);
         }
 };
 
@@ -66,6 +63,7 @@ int main(int argc, char* argv[])
     // Verbose redirects io output to console, if available
     if (pa[{"-v", "--verbose"}]) {
         RedirectIOToConsole();
+        sdfml::llog("Verbose mode", " enabled.", NORMAL, __FILENAME__, __LINE__);
     }
 
     sdfml::switchState(&m);

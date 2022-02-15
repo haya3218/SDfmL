@@ -4,6 +4,7 @@ A wrapper build around SDL2, some of its libraries, and SoLoud to make a lot of 
 more easier to use.
 
 Stuff like:
+
 - Rendering functions
 - Object system
 - Sound
@@ -11,12 +12,13 @@ Stuff like:
 - and most possibly, more.... idk.
 - Less dll binary clutter!
 
-# How the shit to use it den
+## How the shit to use it den
 
 Currently, it only supports MSVC, but you could probably tweak CMakeLists.txt to be able to use
 MingW, or GCC.
 
-## Requirements
+### Requirements
+
 - CMake, to build the damn thing
 - SDL2 and SDL_ttf 2.0, duh
 - SoLoud (static library)

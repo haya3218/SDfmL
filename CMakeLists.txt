@@ -9,6 +9,7 @@ set(SDL2_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/src/SDL2/")
 set(OUT_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/")
 set(OUT2_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/MIDI/")
 set(OUT3_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/src/toml/")
+set(OUT4_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/src/sdfml/")
 
 # Support both 32 and 64 bit builds
 # Someone make a pull request to support MingW
@@ -29,6 +30,7 @@ include_directories(${SDL2_INCLUDE_DIRS})
 include_directories(${OUT_INCLUDE_DIRS})
 include_directories(${OUT2_INCLUDE_DIRS})
 include_directories(${OUT3_INCLUDE_DIRS})
+include_directories(${OUT4_INCLUDE_DIRS})
 include_directories(${CMAKE_CURRENT_LIST_DIR}/src)
 
 # add EVERY FUCKING source file to SOURCES
@@ -44,6 +46,8 @@ FILE(GLOB SOURCES "${CMAKE_CURRENT_LIST_DIR}/src/*.cpp"
 "${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/MIDI/soloud_midi.h"
 "${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/MIDI/*.cpp"
 "${CMAKE_CURRENT_LIST_DIR}/src/toml/*.hpp"
+"${CMAKE_CURRENT_LIST_DIR}/src/sdfml/*.cpp" 
+"${CMAKE_CURRENT_LIST_DIR}/src/sdfml/*.hpp"  
 )
 
 # set c++ std to 17
