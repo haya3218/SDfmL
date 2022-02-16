@@ -31,7 +31,7 @@ You know how to place them. It's fucking common sense.
 - [SoLoud fork.](https://github.com/haya3218/soloud) Follow GENie instructions and build as a static library.
 - You also need to build libmodplug with it as well.
 - If you are gonna be using the OpenMPT module, you'll need the libopenmpt dll in your exe directory as well.
-- Prebuilt binaries (with OpenMPT) are [here.](https://cdn.discordapp.com/attachments/872338952483381258/942572007705440346/SoLoudMasterBuildSDL2libmodplug.7z)
+- Prebuilt binaries (with OpenMPT) are [here.](https://cdn.discordapp.com/attachments/872338952483381258/943307934258057267/SoLoud-SDL2_gpu-libmodplug.7z)
 - Clone the dam repo somewhere on ur machine.
 - Go to where you cloned it, and run `cmake -B build -DCMAKE_BUILD_TYPE=Release`
 - After successfully making the build files, run `cmake --build --config Release` to build it without the use of VStudio.
