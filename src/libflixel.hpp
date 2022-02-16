@@ -445,32 +445,21 @@ namespace sdfml {
     };
 
     static const Uint8* kb;
-    static const Uint8* kb_last;
+    static const Uint8* kb_jp;
+    static const Uint8* kb_jr;
+
+    static bool lockKeys = false;
 
     inline bool key_just_pressed(SDL_Scancode code) {
-        while (SDL_PollEvent(&mContext.events))
-        {
-            if (mContext.events.type == SDL_KEYDOWN)
-                if (mContext.events.key.keysym.scancode == code)
-                    return true;
-        }
-        return false;
+        return kb_jp[code] && !lockKeys;
     }
 
     inline bool key_just_released(SDL_Scancode code) {
-        while (SDL_PollEvent(&mContext.events))
-        {
-            if (mContext.events.type == SDL_KEYUP)
-                if (mContext.events.key.keysym.scancode == code)
-                    return true;
-        }
-        return false;
+        return kb_jr[code] && !lockKeys;
     }
 
     inline bool key_pressed(SDL_Scancode code) {
-        if (kb[code])
-            return true;
-        return false;
+        return kb[code] && !lockKeys;
     }
 
     inline int Sec2Tick(float time) {
@@ -482,10 +471,20 @@ namespace sdfml {
     inline int update() {
         int lastUpdate = SDL_GetTicks();
         bool run = true;
+        kb_jp = SDL_GetKeyboardState(NULL);
+        kb_jr = SDL_GetKeyboardState(NULL);
         while (run) {
             while(SDL_PollEvent(&mContext.events)) {
                 if(mContext.events.type == SDL_QUIT) {
                     run = false;
+                    break;
+                }
+                if (mContext.events.type == SDL_KEYDOWN) {
+                    kb_jp = SDL_GetKeyboardState(NULL);
+                    break;
+                }
+                if (mContext.events.type == SDL_KEYUP) {
+                    kb_jr = SDL_GetKeyboardState(NULL);
                     break;
                 }
             } 
@@ -538,8 +537,6 @@ namespace sdfml {
             elapsed += 1;
 
             SDL_Delay(floor((1000.0f/FRAMERATE) - elapsedMS));
-
-            kb_last = SDL_GetKeyboardState(NULL);
 
             GPU_Flip(mContext.gpu_render);
         }
@@ -596,20 +593,22 @@ namespace sdfml {
         transitionSprite2.create(0, 0, "data/images/black.png");
         curState->add(&transitionSprite2);
         fadeTimer.start(0, []() {
-            transitionSprite2.x = clamp(transitionSprite2.x - 10, -mContext.size.x, 0);
+            transitionSprite2.x = clamp(transitionSprite2.x - (mContext.size.x/FRAMERATE), -mContext.size.x, 0);
             return 0;
         }, true);
+        lockKeys = false;
 
         return 0;
     }
 
     inline void switchState(sdState* state) {
+        lockKeys = true;
         try {
             if (curState != nullptr) {
                 transitionSprite.create(mContext.size.x, 0, "data/images/black.png");
                 curState->add(&transitionSprite);
                 fadeTimer.start(0, []() {
-                    transitionSprite.x = clamp(transitionSprite.x - 7, 0, mContext.size.x);
+                    transitionSprite.x = clamp(transitionSprite.x - (mContext.size.x/FRAMERATE), 0, mContext.size.x);
                     return 0;
                 }, true);
                 switchTimer.start(1, [state](){
