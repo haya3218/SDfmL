@@ -10,15 +10,18 @@ set(OUT_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/")
 set(OUT2_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/MIDI/")
 set(OUT3_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/src/toml/")
 set(OUT4_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/src/sdfml/")
+set(OUT5_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/src/SDL_gpu/")
+
+option(PREFER_MODPLUG "Use libmodplug api instead of libopenmpt for module playback" ON)
 
 # Support both 32 and 64 bit builds
 # Someone make a pull request to support MingW
 # Way to lazy to do that right now
 if (${CMAKE_SIZEOF_VOID_P} MATCHES 8)
-  set(MAIN_LIBRARIES "${CMAKE_CURRENT_LIST_DIR}/lib/x64/libmodplug.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x64/soloud_static.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x64/SDL2.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x64/SDL2_ttf.lib")
+  set(MAIN_LIBRARIES "${CMAKE_CURRENT_LIST_DIR}/lib/x64/SDL2_gpu.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x64/libmodplug.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x64/soloud_static.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x64/SDL2.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x64/SDL2_ttf.lib")
   set(MAIN_LIBRARIES_E "${CMAKE_CURRENT_LIST_DIR}/lib/x64/")
 else ()
-  set(MAIN_LIBRARIES "${CMAKE_CURRENT_LIST_DIR}/lib/x86/libmodplug.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x86/soloud_static.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x86/SDL2.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x86/SDL2_ttf.lib")
+  set(MAIN_LIBRARIES "${CMAKE_CURRENT_LIST_DIR}/lib/x86/SDL2_gpu.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x86/libmodplug.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x86/soloud_static.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x86/SDL2.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x86/SDL2_ttf.lib")
   set(MAIN_LIBRARIES_E "${CMAKE_CURRENT_LIST_DIR}/lib/x86/")
 endif ()
 
@@ -31,6 +34,7 @@ include_directories(${OUT_INCLUDE_DIRS})
 include_directories(${OUT2_INCLUDE_DIRS})
 include_directories(${OUT3_INCLUDE_DIRS})
 include_directories(${OUT4_INCLUDE_DIRS})
+include_directories(${OUT5_INCLUDE_DIRS})
 include_directories(${CMAKE_CURRENT_LIST_DIR}/src)
 
 # add EVERY FUCKING source file to SOURCES
@@ -48,6 +52,7 @@ FILE(GLOB SOURCES "${CMAKE_CURRENT_LIST_DIR}/src/*.cpp"
 "${CMAKE_CURRENT_LIST_DIR}/src/toml/*.hpp"
 "${CMAKE_CURRENT_LIST_DIR}/src/sdfml/*.cpp" 
 "${CMAKE_CURRENT_LIST_DIR}/src/sdfml/*.hpp"  
+"${CMAKE_CURRENT_LIST_DIR}/src/SDL_gpu/*.h"  
 )
 
 # set c++ std to 17
@@ -55,6 +60,9 @@ set(CMAKE_CXX_STANDARD 17)
 
 # edit executable properties part 1
 add_executable(Skateboard WIN32 ${SOURCES} "${CMAKE_CURRENT_SOURCE_DIR}/resources/res.rc")
+
+# COMPILE DEFINES
+target_compile_definitions(Skateboard PRIVATE PREFER_MODPLUG)
 
 # LINK EVERYTHING
 target_link_libraries(Skateboard ${MAIN_LIBRARIES})
@@ -80,6 +88,7 @@ file(REMOVE_RECURSE "${BUILD_DIRECTORY}/SDL2.lib")
 file(REMOVE_RECURSE "${BUILD_DIRECTORY}/SDL2_ttf.lib")
 file(REMOVE_RECURSE "${BUILD_DIRECTORY}/SDL2main.lib")
 file(REMOVE_RECURSE "${BUILD_DIRECTORY}/SDL2test.lib")
+file(REMOVE_RECURSE "${BUILD_DIRECTORY}/SDL2_gpu.lib")
 file(REMOVE_RECURSE "${BUILD_DIRECTORY}/soloud_static.lib")
 file(REMOVE_RECURSE "${BUILD_DIRECTORY}/libmodplug.lib")
 

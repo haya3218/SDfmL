@@ -11,6 +11,7 @@ TinySoundfont and toml11 are under the MIT License.
 This library is dual-licensed between DBAD and MIT license.
 
 This means:
+
 - I do not care about what you do about this goddam library.
 - You can sell it, butcher it, burn it, whatever.
 - Just make sure to not be a dick :)

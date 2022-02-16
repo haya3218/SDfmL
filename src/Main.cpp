@@ -33,8 +33,11 @@ class ExampleState : public sdfml::sdState {
             example.AddAnimation("idle", {{0, 0, 50, 50}, {50, 0, 50, 50}});
             example.PlayAnimation("idle");
             example.framerate = 1;
-            sdfml::sound.music.playMod("data/music/DOPE.it");
+            sdfml::sound.music.playMusic("data/music/canyon.ogg");
             example.updateCamera(&camera);
+            bg1.create(0, 0, "data/images/bg.png");
+            add(&bg1);
+            bg1.updateCamera(&camera);
             add(&example);
         }
         virtual void update(float elapsed) {
@@ -46,6 +49,10 @@ class ExampleState : public sdfml::sdState {
                 example.y -= 1;
             if (sdfml::key_pressed(SDL_SCANCODE_DOWN))
                 example.y += 1;
+
+            bg1.scale.x = sin(sdfml::elapsed/100);
+            bg1.scale.y = cos(sdfml::elapsed/100);
+            bg1.screenCenter();
 
             sdfml::focusCamera(&camera, example);
         }

@@ -5,6 +5,7 @@
 #include "../SoLoud/soloud_speech.h"
 #include "../SoLoud/soloud_modplug.h"
 #include "../SoLoud/soloud_openmpt.h"
+#include "../SoLoud/MIDI/soloud_midi.h"
 #include <array>
 #include <string>
 #include <utility>
@@ -14,16 +15,22 @@
 namespace sdfml {
 
     extern std::array<SoLoud::WavStream, MAX_SFX> sfxBanks;
+    #ifdef PREFER_MODPLUG
+    extern std::pair<SoLoud::WavStream, SoLoud::Modplug> musicBank;
+    #else
     extern std::pair<SoLoud::WavStream, SoLoud::Openmpt> musicBank;
+    #endif
     
     extern SoLoud::Soloud audio;
 
     class MusicHandler {
         public:
+        
             void playMusic(std::string path) {
                 musicBank.first.stop();
                 audio.stopAudioSource(musicBank.first);
                 musicBank.first.load(path.c_str());
+                musicBank.first.setLooping(true);
                 audio.play(musicBank.first);
             }
 
@@ -31,6 +38,7 @@ namespace sdfml {
                 musicBank.second.stop();
                 audio.stopAudioSource(musicBank.second);
                 musicBank.second.load(path.c_str());
+                musicBank.second.setLooping(true);
                 audio.playBackground(musicBank.second);
             }
     };

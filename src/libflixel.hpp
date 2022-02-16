@@ -36,6 +36,8 @@
 
 #include "sdfml/music.hpp"
 
+#include "SDL_gpu/SDL_gpu.h"
+
 #ifdef _WIN32
 #define __FILENAME__ (strrchr(__FILE__, '\\') ? strrchr(__FILE__, '\\') + 1 : __FILE__)
 #else
@@ -67,6 +69,12 @@ enum lLOG_TYPE {
     NORMAL,
     WARNING,
     ERROR_
+};
+
+enum AXIS {
+    X,
+    Y,
+    XY
 };
 
 typedef HWND mWin;
@@ -124,6 +132,7 @@ namespace sdfml {
     static string soundfont = DEFAULT_SF;
 
     struct context {
+        GPU_Target* gpu_render;
         SDL_Window* window;
         SDL_Renderer* renderer;
         SDL_Event events;
@@ -137,12 +146,11 @@ namespace sdfml {
     };
 
     static context mContext;
-    static SoLoud::SoundFont sf;
 
     class sdSprite {
         public:
             int x, y, width, height;
-            double angle = 0;
+            double angle = 0.000001;
             double alpha = 1.0;
 
             Vector2f scale = {1, 1};
@@ -151,12 +159,13 @@ namespace sdfml {
             virtual void create(int x, int y, string path) {
                 this->x = x;
                 this->y = y;
-                _tex = STBIMG_LoadTexture(mContext.renderer, path.c_str());
-                SDL_SetTextureBlendMode(_tex, SDL_BLENDMODE_BLEND);
-                SDL_QueryTexture(_tex, NULL, NULL, &width, &height);
+                _tex_gpu = GPU_LoadImage(path.c_str());
+                GPU_SetBlendMode(_tex_gpu, GPU_BLEND_NORMAL);
+                width = _tex_gpu->w;
+                height = _tex_gpu->h;
             }
             SDL_Rect emptyRect = {0, 0, 0, 0};
-            SDL_Rect *r;
+            GPU_Rect *r;
             virtual void update(float elapsed) {
                 _x = x+offset.x;
                 _y = y+offset.y;
@@ -168,13 +177,13 @@ namespace sdfml {
                 _sc.w = _w;
                 _sc.h = _h;
 
-                SDL_SetTextureAlphaMod(_tex, alpha*255);
+                // GPU_SetRGBA(_tex_gpu, 255, 255, 255, alpha*255);
 
                 r = &_src_rect;
 
-                if (r == &emptyRect)
+                if (r->w == 0)
                     r = NULL;
-                SDL_RenderCopyEx(mContext.renderer, _tex, r, &_sc, angle, NULL, SDL_FLIP_NONE);
+                GPU_BlitRectX(_tex_gpu, r, mContext.gpu_render, &_sc, angle, NULL, NULL, GPU_FLIP_NONE);
             }
             virtual void destroy() {
                 _x = 0;
@@ -182,29 +191,34 @@ namespace sdfml {
                 _w = 0;
                 _h = 0;
                 _sc = {0, 0, 0, 0};
-                SDL_DestroyTexture(_tex);
-            }
-            virtual SDL_Rect get_sc() {
-                return _sc;
-            }
-            virtual void set_sc(SDL_Rect rect) {
-                _sc = rect;
-            }
-            virtual void src_rect(SDL_Rect rect) {
-                _src_rect = rect;
+                GPU_FreeImage(_tex_gpu);
             }
             virtual void updateCamera(SDL_Rect* camera) {
                 _camera = camera;
             }
-        private:
+            virtual void screenCenter(AXIS axis = XY) {
+                switch (axis) {
+                    case X:
+                        x = (mContext.size.x/2) - (width*scale.x/2);
+                        break;
+                    case Y:
+                        y = (mContext.size.y/2) - (height*scale.y/2);
+                        break;
+                    case XY:
+                        x = (mContext.size.x/2) - (width*scale.x/2);
+                        y = (mContext.size.y/2) - (height*scale.y/2);
+                        break;
+                }
+            }
+        protected:
             int _x, _y, _w, _h;
 
-            SDL_Rect _sc;
-            SDL_Rect _src_rect = {0, 0, 0, 0};
+            GPU_Rect _sc;
+            GPU_Rect _src_rect = {0, 0, 0, 0};
             SDL_Rect dummy = {0, 0, 0, 0};
             sdCam _cam;
             SDL_Rect* _camera = &dummy;
-            SDL_Texture* _tex;
+            GPU_Image* _tex_gpu;
     };
 
     inline void focusCamera(SDL_Rect* camera, sdSprite sprite) {
@@ -260,7 +274,7 @@ namespace sdfml {
                     height = (frameRects[current_framename][current_frame].h)*scale.y;
 
                     // after setting shit up, we then store it in src_rect.
-                    src_rect({sx, sy, sw, sh});
+                    _src_rect = {static_cast<float>(sx), static_cast<float>(sy), static_cast<float>(sw), static_cast<float>(sh)};
                 }
             }
             
@@ -282,11 +296,10 @@ namespace sdfml {
 
             }
             virtual void draw(float elapsed) {
-                SDL_RenderClear(mContext.renderer);
+                GPU_Clear(mContext.gpu_render);
                 for (int i = 0; i < _sprites.size(); i++) {
                     _sprites[i]->update(elapsed);
                 }
-                SDL_RenderPresent(mContext.renderer);
             }
             virtual void add(sdSprite* p_spr, bool mut = false) {
                 // a mutable sprite cannot be changed after being added.
@@ -370,18 +383,15 @@ namespace sdfml {
             return llog("SDL_ttf", " has failed to initialize.", ERROR_, __FILENAME__, __LINE__);
         llog("SDL_ttf", " is now initialized.", NORMAL, __FILENAME__, __LINE__);
         llog("", "Initialized libraries. Creating a window context.", NORMAL, __FILENAME__, __LINE__);
-        mContext.window = SDL_CreateWindow(window_name.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, (int)width, (int)height, win_flags);
-        if (mContext.window == nullptr)
-            return llog("", "Failed to create a window.", ERROR_, __FILENAME__, __LINE__);
-        mContext.renderer = SDL_CreateRenderer(mContext.window, -1, SDL_RENDERER_ACCELERATED);
-        if (mContext.renderer == nullptr)
-            return llog("", "Failed to create a renderer.", ERROR_, __FILENAME__, __LINE__);
+        GPU_SetPreInitFlags(GPU_INIT_DISABLE_VSYNC);
+        mContext.gpu_render = GPU_Init(width, height, GPU_DEFAULT_INIT_FLAGS);
 
-        sf.load(soundfont.c_str());
+        SDL_SetWindowTitle(SDL_GetWindowFromID(mContext.gpu_render->context->windowID), window_name.c_str());
+        //sound.music.loadSoundfont(soundfont);
 
         SDL_SysWMinfo wmInfo;
         SDL_VERSION(&wmInfo.version);
-        SDL_GetWindowWMInfo(mContext.window, &wmInfo);
+        SDL_GetWindowWMInfo(SDL_GetWindowFromID(mContext.gpu_render->context->windowID), &wmInfo);
         mContext.direct_win = wmInfo.info.win.window;
 
         SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
@@ -433,6 +443,8 @@ namespace sdfml {
     inline int Sec2Tick(float time) {
         return FRAMERATE*time;
     }
+
+    static double elapsed;
 
     inline int update() {
         int lastUpdate = SDL_GetTicks();
@@ -492,7 +504,11 @@ namespace sdfml {
 
             kb_last = SDL_GetKeyboardState(NULL);
 
+            elapsed += 1;
+
             SDL_Delay(floor((1000.0f/FRAMERATE) - elapsedMS));
+
+            GPU_Flip(mContext.gpu_render);
         }
 
         if (curState->get_spr().size() > 0) {
@@ -505,8 +521,7 @@ namespace sdfml {
                 texture.destroy();
             }
         }
-        SDL_DestroyRenderer(mContext.renderer);
-        SDL_DestroyWindow(mContext.window);
+        GPU_Quit();
         sound.deinit();
         ReleaseConsole();
         TTF_Quit();

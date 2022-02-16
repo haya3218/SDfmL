@@ -36,8 +36,10 @@ THE SOFTWARE.
 #include "SDL.h"
 #include "SDL_ttf.h"
 
+#define FC_USE_SDL_GPU
+
 #ifdef FC_USE_SDL_GPU
-    #include "SDL_gpu.h"
+    #include "../SDL_gpu/SDL_gpu.h"
 #endif
 
 
@@ -50,8 +52,6 @@ extern "C" {
 
 // Let's pretend this exists...
 #define TTF_STYLE_OUTLINE	16
-
-
 
 // Differences between SDL_Renderer and SDL_gpu
 #ifdef FC_USE_SDL_GPU
