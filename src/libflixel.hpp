@@ -38,6 +38,9 @@
 
 #include "SDL_gpu/SDL_gpu.h"
 
+#include <thread>         // std::this_thread::sleep_for
+#include <chrono>         // std::chrono::seconds
+
 #ifdef _WIN32
 #define __FILENAME__ (strrchr(__FILE__, '\\') ? strrchr(__FILE__, '\\') + 1 : __FILE__)
 #else
@@ -63,6 +66,13 @@ struct Vector2
 {
     int x = 0;
     int y = 0;
+};
+
+template <typename T>
+struct Vector3 {
+    T r;
+    T g;
+    T b;
 };
 
 enum lLOG_TYPE {
@@ -147,6 +157,25 @@ namespace sdfml {
 
     static context mContext;
 
+    template <typename T>
+    inline int getIndex(vector<T> v, T K)
+    {
+        auto it = find(v.begin(), v.end(), K);
+    
+        // If element was found
+        if (it != v.end())
+        {
+        
+            // calculating the index
+            // of K
+            int index = it - v.begin();
+            return index;
+        }
+        else {
+            return -1;
+        }
+    }
+
     class sdSprite {
         public:
             int x, y, width, height;
@@ -156,6 +185,8 @@ namespace sdfml {
             Vector2f scale = {1, 1};
             Vector2 offset;
 
+            Vector3<Uint8> color;
+
             virtual void create(int x, int y, string path) {
                 this->x = x;
                 this->y = y;
@@ -163,34 +194,26 @@ namespace sdfml {
                 GPU_SetBlendMode(_tex_gpu, GPU_BLEND_NORMAL);
                 width = _tex_gpu->w;
                 height = _tex_gpu->h;
+                color.r = 255;
+                color.g = 255;
+                color.b = 255;
             }
-            SDL_Rect emptyRect = {0, 0, 0, 0};
             GPU_Rect *r;
             virtual void update(float elapsed) {
                 _x = x+offset.x;
                 _y = y+offset.y;
-                _w = width*scale.x;
-                _h = height*scale.y;
-
-                _sc.x = _x-_camera->x;
-                _sc.y = _y-_camera->y;
-                _sc.w = _w;
-                _sc.h = _h;
-
-                // GPU_SetRGBA(_tex_gpu, 255, 255, 255, alpha*255);
-
+                GPU_SetRGBA(_tex_gpu, color.r, color.g, color.b, alpha*255);
                 r = &_src_rect;
-
                 if (r->w == 0)
                     r = NULL;
-                GPU_BlitRectX(_tex_gpu, r, mContext.gpu_render, &_sc, angle, NULL, NULL, GPU_FLIP_NONE);
+                GPU_Rect dst = {static_cast<float>(_x-_camera->x), static_cast<float>(_y-_camera->y), width*scale.x, height*scale.y};
+                GPU_BlitRectX(_tex_gpu, r, mContext.gpu_render, &dst, angle, NULL, NULL, GPU_FLIP_NONE);
             }
             virtual void destroy() {
                 _x = 0;
                 _y = 0;
                 _w = 0;
                 _h = 0;
-                _sc = {0, 0, 0, 0};
                 GPU_FreeImage(_tex_gpu);
             }
             virtual void updateCamera(SDL_Rect* camera) {
@@ -213,7 +236,6 @@ namespace sdfml {
         protected:
             int _x, _y, _w, _h;
 
-            GPU_Rect _sc;
             GPU_Rect _src_rect = {0, 0, 0, 0};
             SDL_Rect dummy = {0, 0, 0, 0};
             sdCam _cam;
@@ -316,7 +338,10 @@ namespace sdfml {
             vector<sdSprite> get_mspr() {
                 return _mut_sprites;
             }
-        private:
+            void freeSprites() {
+                _mut_sprites.clear();
+                _sprites.clear();
+            }
             vector<sdSprite> _mut_sprites;
             vector<sdSprite*> _sprites;
     };
@@ -423,14 +448,22 @@ namespace sdfml {
     static const Uint8* kb_last;
 
     inline bool key_just_pressed(SDL_Scancode code) {
-        if (kb[code] && !kb_last[code])
-            return true;
+        while (SDL_PollEvent(&mContext.events))
+        {
+            if (mContext.events.type == SDL_KEYDOWN)
+                if (mContext.events.key.keysym.scancode == code)
+                    return true;
+        }
         return false;
     }
 
     inline bool key_just_released(SDL_Scancode code) {
-        if (!kb[code] && kb_last[code])
-            return true;
+        while (SDL_PollEvent(&mContext.events))
+        {
+            if (mContext.events.type == SDL_KEYUP)
+                if (mContext.events.key.keysym.scancode == code)
+                    return true;
+        }
         return false;
     }
 
@@ -502,11 +535,11 @@ namespace sdfml {
 
             float elapsedMS = (float)(end - start) / SDL_GetPerformanceFrequency() * 1000.0f;
 
-            kb_last = SDL_GetKeyboardState(NULL);
-
             elapsed += 1;
 
             SDL_Delay(floor((1000.0f/FRAMERATE) - elapsedMS));
+
+            kb_last = SDL_GetKeyboardState(NULL);
 
             GPU_Flip(mContext.gpu_render);
         }
@@ -530,12 +563,18 @@ namespace sdfml {
         return 0;
     }
 
-    inline void switchState(sdState* state) {
+    static sdSprite transitionSprite;
+    static sdSprite transitionSprite2;
+    static sdTimer fadeTimer;
+    static sdTimer switchTimer;
+
+    inline double clamp(double d, double min, double max) {
+        const double t = d < min ? min : d;
+        return t > max ? max : t;
+    }
+
+    inline int lmao(sdState* state) {
         if (curState != nullptr) {
-            _ticks = {};
-            _call = {};
-            _repeats = {};
-            _sec = {};
             if (curState->get_spr().size() > 0) {
                 for (auto texture : curState->get_spr()) {
                     texture->destroy();
@@ -546,9 +585,44 @@ namespace sdfml {
                     texture.destroy();
                 }
             }
+            curState->freeSprites();
         }
         curState = state;
+        _ticks = {};
+        _call = {};
+        _repeats = {};
+        _sec = {};
         curState->create();
+        transitionSprite2.create(0, 0, "data/images/black.png");
+        curState->add(&transitionSprite2);
+        fadeTimer.start(0, []() {
+            transitionSprite2.x = clamp(transitionSprite2.x - 10, -mContext.size.x, 0);
+            return 0;
+        }, true);
+
+        return 0;
+    }
+
+    inline void switchState(sdState* state) {
+        try {
+            if (curState != nullptr) {
+                transitionSprite.create(mContext.size.x, 0, "data/images/black.png");
+                curState->add(&transitionSprite);
+                fadeTimer.start(0, []() {
+                    transitionSprite.x = clamp(transitionSprite.x - 7, 0, mContext.size.x);
+                    return 0;
+                }, true);
+                switchTimer.start(1, [state](){
+                    lmao(state);
+                    return 0;
+                });
+            } else {
+                lmao(state);
+            }
+        }
+        catch (...) {
+            lmao(state);
+        }
     }
 }
 #endif

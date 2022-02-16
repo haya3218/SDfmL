@@ -28,6 +28,7 @@ To use it (in windows atleast),
 
 - Get SDL2 and SDL_ttf 2.0, and put em on the respective x86 and x64 folders.
 You know how to place them. It's fucking common sense.
+- Get SDL_gpu as well.
 - [SoLoud fork.](https://github.com/haya3218/soloud) Follow GENie instructions and build as a static library.
 - You also need to build libmodplug with it as well.
 - If you are gonna be using the OpenMPT module, you'll need the libopenmpt dll in your exe directory as well.

@@ -1,5 +1,5 @@
-# Make sur cmake is 3.8
-cmake_minimum_required(VERSION 3.8)
+# Make sur cmake is 3.10
+cmake_minimum_required(VERSION 3.10)
 
 # proj name
 project(Skateboard)
@@ -14,16 +14,16 @@ set(OUT5_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/src/SDL_gpu/")
 
 option(PREFER_MODPLUG "Use libmodplug api instead of libopenmpt for module playback" ON)
 
+if (${CMAKE_SIZEOF_VOID_P} MATCHES 8)
+	set(MAIN_LIBRARIES_E "${CMAKE_CURRENT_LIST_DIR}/lib/x64")
+else ()
+	set(MAIN_LIBRARIES_E "${CMAKE_CURRENT_LIST_DIR}/lib/x86")
+endif ()
+
 # Support both 32 and 64 bit builds
 # Someone make a pull request to support MingW
 # Way to lazy to do that right now
-if (${CMAKE_SIZEOF_VOID_P} MATCHES 8)
-  set(MAIN_LIBRARIES "${CMAKE_CURRENT_LIST_DIR}/lib/x64/SDL2_gpu.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x64/libmodplug.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x64/soloud_static.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x64/SDL2.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x64/SDL2_ttf.lib")
-  set(MAIN_LIBRARIES_E "${CMAKE_CURRENT_LIST_DIR}/lib/x64/")
-else ()
-  set(MAIN_LIBRARIES "${CMAKE_CURRENT_LIST_DIR}/lib/x86/SDL2_gpu.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x86/libmodplug.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x86/soloud_static.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x86/SDL2.lib;${CMAKE_CURRENT_LIST_DIR}/lib/x86/SDL2_ttf.lib")
-  set(MAIN_LIBRARIES_E "${CMAKE_CURRENT_LIST_DIR}/lib/x86/")
-endif ()
+set(MAIN_LIBRARIES "${MAIN_LIBRARIES_E}/SDL2_gpu.lib;${MAIN_LIBRARIES_E}/libmodplug.lib;${MAIN_LIBRARIES_E}/soloud_static.lib;${MAIN_LIBRARIES_E}/SDL2.lib;${MAIN_LIBRARIES_E}/SDL2_ttf.lib")
 
 # strip it all
 string(STRIP "${MAIN_LIBRARIES}" MAIN_LIBRARIES)
@@ -80,7 +80,7 @@ set_target_properties(Skateboard PROPERTIES
 )
 
 # copy dll files
-file(COPY ${MAIN_LIBRARIES_E} DESTINATION ${BUILD_DIRECTORY})
+file(COPY "${MAIN_LIBRARIES_E}/" DESTINATION ${BUILD_DIRECTORY})
 
 # remove lib files
 file(REMOVE_RECURSE "${BUILD_DIRECTORY}/*.lib")

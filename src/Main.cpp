@@ -39,6 +39,7 @@ class ExampleState : public sdfml::sdState {
             add(&bg1);
             bg1.updateCamera(&camera);
             add(&example);
+            //bg1.screenCenter();
         }
         virtual void update(float elapsed) {
             if (sdfml::key_pressed(SDL_SCANCODE_LEFT))
@@ -49,9 +50,12 @@ class ExampleState : public sdfml::sdState {
                 example.y -= 1;
             if (sdfml::key_pressed(SDL_SCANCODE_DOWN))
                 example.y += 1;
+            if (sdfml::key_just_pressed(SDL_SCANCODE_R))
+                sdfml::switchState(this);
 
             bg1.scale.x = sin(sdfml::elapsed/100);
             bg1.scale.y = cos(sdfml::elapsed/100);
+
             bg1.screenCenter();
 
             sdfml::focusCamera(&camera, example);
