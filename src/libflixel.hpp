@@ -543,7 +543,7 @@ namespace sdfml {
 
             float elapsedMS = (float)(end - start) / SDL_GetPerformanceFrequency() * 1000.0f;
 
-            elapsed += 1;
+            elapsed = SDL_GetTicks()/1000.0f;
 
             SDL_Delay(floor((1000.0f/FRAMERATE) - elapsedMS));
 
