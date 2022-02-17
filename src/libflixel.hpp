@@ -35,6 +35,7 @@
 #include "guicon.h"
 
 #include "sdfml/music.hpp"
+#include "sdfml/shader.hpp"
 
 #include "SDL_gpu/SDL_gpu.h"
 
@@ -99,6 +100,8 @@ inline std::string _GetCurrentDirectory()
 }
 
 namespace sdfml {
+
+    static double elapsed;
 
     inline int llog(string prefix, string msg, lLOG_TYPE type = NORMAL, string file = "???.cpp", int line = 0) {
         clock_t now = std::clock();
@@ -187,6 +190,8 @@ namespace sdfml {
 
             Vector3<Uint8> color;
 
+            ShaderProg shader;
+
             virtual void create(int x, int y, string path) {
                 this->x = x;
                 this->y = y;
@@ -198,6 +203,9 @@ namespace sdfml {
                 color.g = 255;
                 color.b = 255;
             }
+            virtual void addShader(std::string path) {
+                shader.loadShader(path, FRAGMENT, mContext.gpu_render, _tex_gpu);
+            }
             GPU_Rect *r;
             virtual void update(float elapsed) {
                 _x = x+offset.x;
@@ -206,14 +214,17 @@ namespace sdfml {
                 r = &_src_rect;
                 if (r->w == 0)
                     r = NULL;
+                shader.updateShader(static_cast<float>(sdfml::elapsed));
                 GPU_Rect dst = {static_cast<float>(_x-_camera->x), static_cast<float>(_y-_camera->y), width*scale.x, height*scale.y};
                 GPU_BlitRectX(_tex_gpu, r, mContext.gpu_render, &dst, angle, NULL, NULL, GPU_FLIP_NONE);
+                shader.postUpdate();
             }
             virtual void destroy() {
                 _x = 0;
                 _y = 0;
                 _w = 0;
                 _h = 0;
+                shader.freeShader();
                 GPU_FreeImage(_tex_gpu);
             }
             virtual void updateCamera(SDL_Rect* camera) {
@@ -465,8 +476,6 @@ namespace sdfml {
     inline int Sec2Tick(float time) {
         return FRAMERATE*time;
     }
-
-    static double elapsed;
 
     inline int update() {
         int lastUpdate = SDL_GetTicks();
