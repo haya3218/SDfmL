@@ -50,6 +50,22 @@ class ExampleState : public sdfml::sdState {
                 example.y -= 1;
             if (sdfml::key_pressed(SDL_SCANCODE_DOWN))
                 example.y += 1;
+            if (sdfml::key_pressed(SDL_SCANCODE_A))
+                sdfml::camera.x -= 1;
+            if (sdfml::key_pressed(SDL_SCANCODE_D))
+                sdfml::camera.x += 1;
+            if (sdfml::key_pressed(SDL_SCANCODE_W))
+                sdfml::camera.y -= 1;
+            if (sdfml::key_pressed(SDL_SCANCODE_S))
+                sdfml::camera.y += 1;
+            if (sdfml::key_pressed(SDL_SCANCODE_J))
+                sdfml::camera.zoom_x -= 0.1;
+            if (sdfml::key_pressed(SDL_SCANCODE_L))
+                sdfml::camera.zoom_x += 0.1;
+            if (sdfml::key_pressed(SDL_SCANCODE_K))
+                sdfml::camera.zoom_y -= 0.1;
+            if (sdfml::key_pressed(SDL_SCANCODE_I))
+                sdfml::camera.zoom_y += 0.1;
             if (sdfml::key_just_pressed(SDL_SCANCODE_R))
                 sdfml::switchState(this);
 

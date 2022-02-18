@@ -192,16 +192,21 @@ namespace sdfml {
 
             ShaderProg shader;
 
+            bool antialiasing = true;
+
             virtual void create(int x, int y, string path) {
                 this->x = x;
                 this->y = y;
-                _tex_gpu = GPU_LoadImage(path.c_str());
+                SDL_Surface* temp_surf = STBIMG_Load(path.c_str());
+                _tex_gpu = GPU_CopyImageFromSurface(temp_surf);
                 GPU_SetBlendMode(_tex_gpu, GPU_BLEND_NORMAL);
+                _tex_gpu->is_alias = antialiasing;
                 width = _tex_gpu->w;
                 height = _tex_gpu->h;
                 color.r = 255;
                 color.g = 255;
                 color.b = 255;
+                SDL_FreeSurface(temp_surf);
             }
             virtual void addShader(std::string path) {
                 shader.loadShader(path, FRAGMENT, mContext.gpu_render, _tex_gpu);
@@ -554,6 +559,8 @@ namespace sdfml {
             elapsed = SDL_GetTicks()/1000.0f;
 
             SDL_Delay(floor((1000.0f/FRAMERATE) - elapsedMS));
+
+            GPU_SetCamera(mContext.gpu_render, &camera);
 
             GPU_Flip(mContext.gpu_render);
         }
