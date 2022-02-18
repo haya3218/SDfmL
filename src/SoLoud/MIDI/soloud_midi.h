@@ -52,9 +52,9 @@ namespace SoLoud
 	public:
 		Midi();
 		virtual ~Midi();
-		result load(const char* aFilename, SoundFont &sf);
+		result load(const char* aFilename, SoundFont sf);
 		result loadMem(unsigned char *aMem, unsigned int aLength, SoundFont &sf, bool aCopy = false, bool aTakeOwnership = true);
-		result loadFile(File *aFile, SoundFont &sf);
+		result loadFile(File *aFile, SoundFont sf);
 		virtual AudioSourceInstance *createInstance();
 	};
 };

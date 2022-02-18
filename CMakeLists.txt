@@ -92,4 +92,12 @@ file(REMOVE_RECURSE "${BUILD_DIRECTORY}/SDL2_gpu.lib")
 file(REMOVE_RECURSE "${BUILD_DIRECTORY}/soloud_static.lib")
 file(REMOVE_RECURSE "${BUILD_DIRECTORY}/libmodplug.lib")
 
+if (PREFER_MODPLUG)
+file(REMOVE_RECURSE "${BUILD_DIRECTORY}/libopenmpt.dll")
+file(REMOVE_RECURSE "${BUILD_DIRECTORY}/openmpt-mpg123.dll")
+file(REMOVE_RECURSE "${BUILD_DIRECTORY}/openmpt-ogg.dll")
+file(REMOVE_RECURSE "${BUILD_DIRECTORY}/openmpt-vorbis.dll")
+file(REMOVE_RECURSE "${BUILD_DIRECTORY}/openmpt-zlib.dll")
+endif()
+
 # :)

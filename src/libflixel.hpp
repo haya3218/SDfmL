@@ -410,8 +410,6 @@ namespace sdfml {
             });
         soundfont = tomlParse<string>("conf.toml", "config", "soundfont");
 
-        sound.init();
-        llog("SoLoud", " is now initialized.", NORMAL, __FILENAME__, __LINE__);
         if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
             return llog("SDL", " has failed to initialize.", ERROR_, __FILENAME__, __LINE__);
         llog("SDL", " is now initialized.", NORMAL, __FILENAME__, __LINE__);
@@ -429,6 +427,10 @@ namespace sdfml {
         SDL_VERSION(&wmInfo.version);
         SDL_GetWindowWMInfo(SDL_GetWindowFromID(mContext.gpu_render->context->windowID), &wmInfo);
         mContext.direct_win = wmInfo.info.win.window;
+
+        sound.init();
+        sound.initSF(soundfont);
+        llog("SoLoud", " is now initialized.", NORMAL, __FILENAME__, __LINE__);
 
         SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
 

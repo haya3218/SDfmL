@@ -185,7 +185,7 @@ namespace SoLoud
 		return loadFile(&f, sf);
 	}
 
-	result Midi::load(const char *aFilename, SoundFont &sf)
+	result Midi::load(const char *aFilename, SoundFont sf)
 	{
 		DiskFile f;
 		int res = f.open(aFilename);
@@ -195,13 +195,8 @@ namespace SoLoud
 		return loadFile(&f, sf);
 	}
 
-	result Midi::loadFile(File *aFile, SoundFont &sf)
+	result Midi::loadFile(File *aFile, SoundFont sf)
 	{
-		if (mData)
-		{
-			delete[] mData;
-		}
-
 		mDataLen = aFile->length();
 		mData = new char[mDataLen];
 		if (!mData)
@@ -227,7 +222,7 @@ namespace SoLoud
 	Midi::Midi()
 	{
 		mBaseSamplerate = 44100;
-		mChannels = 1;
+		mChannels = 2;
 		mData = 0;
 		mDataLen = 0;
 		mSoundFont = 0;
