@@ -397,6 +397,8 @@ namespace sdfml {
         config.close();
     }
 
+    static GPU_Camera camera;
+
     inline int init(float width = DEFAULT_WINDOW_WIDTH, float height = DEFAULT_WINDOW_HEIGHT, string window_name = "Unknown", 
                     int win_flags = SDL_WINDOW_OPENGL|SDL_WINDOW_ALLOW_HIGHDPI|SDL_WINDOW_SHOWN) {
         std::ofstream logFile;
@@ -431,6 +433,10 @@ namespace sdfml {
         sound.init();
         sound.initSF(soundfont);
         llog("SoLoud", " is now initialized.", NORMAL, __FILENAME__, __LINE__);
+
+        camera = GPU_GetDefaultCamera();
+        GPU_EnableCamera(mContext.gpu_render, true);
+        GPU_SetCamera(mContext.gpu_render, &camera);
 
         SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
 
