@@ -12,3 +12,4 @@ bin/*.exe
 bin/*.dll
 bin/log.txt
 bin/conf.toml
+compile_flags.txt

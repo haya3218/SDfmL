@@ -11,6 +11,8 @@ set(OUT2_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/src/SoLoud/MIDI/")
 set(OUT3_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/src/toml/")
 set(OUT4_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/src/sdfml/")
 set(OUT5_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/src/SDL_gpu/")
+set(OUT6_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/src/lua/lua/")
+set(OUT7_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/src/lua/")
 
 option(PREFER_MODPLUG "Use libmodplug api instead of libopenmpt for module playback" ON)
 
@@ -23,7 +25,7 @@ endif ()
 # Support both 32 and 64 bit builds
 # Someone make a pull request to support MingW
 # Way to lazy to do that right now
-set(MAIN_LIBRARIES "${MAIN_LIBRARIES_E}/SDL2_gpu.lib;${MAIN_LIBRARIES_E}/libmodplug.lib;${MAIN_LIBRARIES_E}/soloud_static.lib;${MAIN_LIBRARIES_E}/SDL2.lib;${MAIN_LIBRARIES_E}/SDL2_ttf.lib")
+set(MAIN_LIBRARIES "${MAIN_LIBRARIES_E}/luajit.lib;${MAIN_LIBRARIES_E}/lua51.lib;${MAIN_LIBRARIES_E}/SDL2_gpu.lib;${MAIN_LIBRARIES_E}/libmodplug.lib;${MAIN_LIBRARIES_E}/soloud_static.lib;${MAIN_LIBRARIES_E}/SDL2.lib;${MAIN_LIBRARIES_E}/SDL2_ttf.lib")
 
 # strip it all
 string(STRIP "${MAIN_LIBRARIES}" MAIN_LIBRARIES)
@@ -35,6 +37,8 @@ include_directories(${OUT2_INCLUDE_DIRS})
 include_directories(${OUT3_INCLUDE_DIRS})
 include_directories(${OUT4_INCLUDE_DIRS})
 include_directories(${OUT5_INCLUDE_DIRS})
+include_directories(${OUT6_INCLUDE_DIRS})
+include_directories(${OUT7_INCLUDE_DIRS})
 include_directories(${CMAKE_CURRENT_LIST_DIR}/src)
 
 # add EVERY FUCKING source file to SOURCES
@@ -53,6 +57,8 @@ FILE(GLOB SOURCES "${CMAKE_CURRENT_LIST_DIR}/src/*.cpp"
 "${CMAKE_CURRENT_LIST_DIR}/src/sdfml/*.cpp" 
 "${CMAKE_CURRENT_LIST_DIR}/src/sdfml/*.hpp"  
 "${CMAKE_CURRENT_LIST_DIR}/src/SDL_gpu/*.h"  
+"${CMAKE_CURRENT_LIST_DIR}/src/lua/*.hpp"  
+"${CMAKE_CURRENT_LIST_DIR}/src/lua/lua/*.h"  
 )
 
 # set c++ std to 17
@@ -91,6 +97,8 @@ file(REMOVE_RECURSE "${BUILD_DIRECTORY}/SDL2test.lib")
 file(REMOVE_RECURSE "${BUILD_DIRECTORY}/SDL2_gpu.lib")
 file(REMOVE_RECURSE "${BUILD_DIRECTORY}/soloud_static.lib")
 file(REMOVE_RECURSE "${BUILD_DIRECTORY}/libmodplug.lib")
+file(REMOVE_RECURSE "${BUILD_DIRECTORY}/lua51.lib")
+file(REMOVE_RECURSE "${BUILD_DIRECTORY}/luajit.lib")
 
 if (PREFER_MODPLUG)
 file(REMOVE_RECURSE "${BUILD_DIRECTORY}/libopenmpt.dll")
