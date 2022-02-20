@@ -31,3 +31,9 @@ Copy all of the library files to the `lib/` folder.
 Reminder that ALL header files are already included, so you don't need to worry about linker issues.
 
 `src/Main.cpp` should contain example code with some explanations.
+
+Run `cmake` in any kind of way to build the program (most recommended is `cmake -B build -DCMAKE_BUILD_TYPE=Release -G "NMake Makefiles"`) and give yourself a pat in the back for building it.
+
+## Documentation?
+
+Not now. Most likely when the framework actually reaches a stable 1.0 release.

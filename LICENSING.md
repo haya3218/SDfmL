@@ -1,10 +1,10 @@
 # Licensing
 
-The sole libraries themselves (SDL, SoLoud) are under the zLib/LibPNG licenses ofc, so you'll have to deal with that
-
-stb_image is under the Public Domain/MIT.
-
-TinySoundfont and toml11 are under the MIT License.
+- Framework itself - see below ;)
+- SDL2, SDL_ttf and SoLoud - zlib/libPNG
+- TinySoundfont, toml11, Lua, LuaJIT, sol2 - MIT License
+- argh - BSD-3
+- stb_image.h - Public Domain/MIT
 
 ## SDfmL license
 
