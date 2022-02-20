@@ -10,6 +10,6 @@ Uses a style based on Flixel, a (very old) flash game engine.
 
 *This branch is experimental, think before you use!*
 
-*For more information, check out [the basics.](DOCUMENTATION.md)*
+*For more information, check out the [[DOCUMENTATION]].*
 
-*License details are at [LICENSING.md](LICENSING.md)*
+*License details are at [[LICENSING]].*
