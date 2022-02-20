@@ -12,4 +12,7 @@ bin/*.exe
 bin/*.dll
 bin/log.txt
 bin/conf.toml
+bin/*.manifest
 compile_flags.txt
+.cache/
+.frontmatter/

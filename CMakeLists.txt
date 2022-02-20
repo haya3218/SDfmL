@@ -70,6 +70,10 @@ add_executable(Skateboard WIN32 ${SOURCES} "${CMAKE_CURRENT_SOURCE_DIR}/resource
 # COMPILE DEFINES
 target_compile_definitions(Skateboard PRIVATE PREFER_MODPLUG)
 
+if ( MSVC )
+	target_compile_options(Skateboard PRIVATE /W1)
+endif()
+
 # LINK EVERYTHING
 target_link_libraries(Skateboard ${MAIN_LIBRARIES})
 

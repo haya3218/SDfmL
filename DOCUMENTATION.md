@@ -20,12 +20,12 @@ Stuff like:
 - [SoLoud](https://github.com/haya3218/soloud) (static library)
 - [LuaJIT](http://luajit.org)
 
-### Compiler Requirements
+## Compiler Requirements
 
 - VC++ (MSVC) version 14.2 or above
 (GCC, clang, and MingW-w64 are not supported yet, [but feel free to make a pull request!](https://github.com/haya3218/SDfmL/compare))
 
-#### Instructions
+## Instructions
 
 Copy all of the library files to the `lib/` folder.
 Reminder that ALL header files are already included, so you don't need to worry about linker issues.
