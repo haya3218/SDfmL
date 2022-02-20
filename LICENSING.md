@@ -2,7 +2,7 @@
 
 - Framework itself - see below ;)
 - SDL2, SDL_ttf and SoLoud - zlib/libPNG
-- TinySoundfont, toml11, Lua, LuaJIT, sol2 - MIT License
+- TinySoundfont, toml11, Lua, LuaJIT, sol2, SDL_gpu - MIT License
 - argh - BSD-3
 - stb_image.h - Public Domain/MIT
 
