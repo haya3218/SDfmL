@@ -12,21 +12,13 @@ namespace sdfml {
     class LuaHandler {
         protected:
             sol::state _lua_state;
-            sol::state_view _lua_view;
+            sol::state_view _lua_view = NULL;
             sol::load_result _cur_result;
             bool _prefer_view = false;
         public:
-            LuaHandler() {
-                sol::state_view temp(NULL);
-                _lua_view = temp;
-            }
             int open_state(std::string path, bool immediate = false);
 
             int create_from_lua_state(lua_State* L, std::string path, bool immediate = false);
-
-            int open_from_lua_state(lua_State* L, std::string path, bool immediate = false) {
-                return create_from_lua_state(L, path, immediate);
-            }
 
             int run_state();
 
@@ -39,6 +31,8 @@ namespace sdfml {
             template <typename... Args>
             void add_libraries(Args&&... libraries);
     };
+
+    //static LuaHandler lua;
 }
 
 #endif

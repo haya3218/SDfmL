@@ -67,6 +67,7 @@ ExampleState m;
 int main(int argc, char* argv[]) 
 {
     if (sdfml::init() > 0) {
+        sdfml::llog("game died", "", NORMAL, __FILENAME__, __LINE__);
         return EXIT_FAILURE;
     }
 

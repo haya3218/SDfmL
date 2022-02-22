@@ -405,8 +405,6 @@ namespace sdfml {
 
     static GPU_Camera camera;
 
-    static LuaHandler lua;
-
     inline int init(float width = DEFAULT_WINDOW_WIDTH, float height = DEFAULT_WINDOW_HEIGHT, string window_name = "Unknown", 
                     int win_flags = SDL_WINDOW_OPENGL|SDL_WINDOW_ALLOW_HIGHDPI|SDL_WINDOW_SHOWN) {
         std::ofstream logFile;
@@ -439,7 +437,7 @@ namespace sdfml {
         mContext.direct_win = wmInfo.info.win.window;
 
         sound.init();
-        sound.initSF(soundfont);
+
         llog("SoLoud", " is now initialized.", NORMAL, __FILENAME__, __LINE__);
 
         camera = GPU_GetDefaultCamera();

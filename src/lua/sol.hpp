@@ -27239,7 +27239,7 @@ namespace sol {
 		using iterator = typename global_table::iterator;
 		using const_iterator = typename global_table::const_iterator;
 
-		state_view(lua_State* Ls = NULL) : L(Ls), reg(Ls, LUA_REGISTRYINDEX), global(Ls, global_tag) {
+		state_view(lua_State* Ls) : L(Ls), reg(Ls, LUA_REGISTRYINDEX), global(Ls, global_tag) {
 		}
 
 		state_view(this_state Ls) : state_view(Ls.L) {

@@ -20,18 +20,11 @@ namespace sdfml {
     #else
     extern std::pair<SoLoud::WavStream, SoLoud::Openmpt> musicBank;
     #endif
-
-    extern SoLoud::Midi midiBank;
-    extern SoLoud::SoundFont midiSF;
     
     extern SoLoud::Soloud audio;
 
     class MusicHandler {
         public:
-
-            void playMidi(std::string path) {
-                
-            }
         
             void playMusic(std::string path) {
                 musicBank.first.stop();
@@ -56,10 +49,6 @@ namespace sdfml {
 
             void init() {
                 audio.init(audio.CLIP_ROUNDOFF, audio.MINIAUDIO);
-            }
-
-            void initSF(std::string path) {
-                midiSF.load(path.c_str());
             }
 
             void deinit() {

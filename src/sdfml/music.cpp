@@ -6,7 +6,5 @@ std::pair<SoLoud::WavStream, SoLoud::Modplug> sdfml::musicBank;
 #else
 std::pair<SoLoud::WavStream, SoLoud::Openmpt> sdfml::musicBank;
 #endif
-SoLoud::Midi sdfml::midiBank;
-SoLoud::SoundFont sdfml::midiSF;
 SoLoud::Soloud sdfml::audio;
 sdfml::AudioHandler sdfml::sound;
