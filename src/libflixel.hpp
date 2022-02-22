@@ -14,6 +14,7 @@
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_ttf.h"
 #include "SDL2/SDL_FontCache.h"
+#include "SDL_video.h"
 #include "SoLoud/soloud.h"
 #include "SoLoud/soloud_wav.h"
 #include "SoLoud/soloud_wavstream.h"
@@ -148,7 +149,6 @@ namespace sdfml {
     struct context {
         GPU_Target* gpu_render;
         SDL_Window* window;
-        SDL_Renderer* renderer;
         SDL_Event events;
         mWin direct_win;
         Vector2f size;
@@ -429,13 +429,12 @@ namespace sdfml {
         llog("", "Initialized libraries. Creating a window context.", NORMAL, __FILENAME__, __LINE__);
         GPU_SetPreInitFlags(GPU_INIT_DISABLE_VSYNC);
         mContext.gpu_render = GPU_Init(width, height, GPU_DEFAULT_INIT_FLAGS);
-
-        SDL_SetWindowTitle(SDL_GetWindowFromID(mContext.gpu_render->context->windowID), window_name.c_str());
-        //sound.music.loadSoundfont(soundfont);
-
+        mContext.window = SDL_GetWindowFromID(mContext.gpu_render->context->windowID);
+        SDL_SetWindowTitle(mContext.window, window_name.c_str());
+        
         SDL_SysWMinfo wmInfo;
         SDL_VERSION(&wmInfo.version);
-        SDL_GetWindowWMInfo(SDL_GetWindowFromID(mContext.gpu_render->context->windowID), &wmInfo);
+        SDL_GetWindowWMInfo(mContext.window, &wmInfo);
         mContext.direct_win = wmInfo.info.win.window;
 
         sound.init();
@@ -448,7 +447,7 @@ namespace sdfml {
 
         SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
 
-        mContext.size = {width, height};
+        mContext.size = {static_cast<float>(mContext.gpu_render->context->window_w), static_cast<float>(mContext.gpu_render->context->window_h)};
 
         return llog("", "Fully finalized initialization. Command over.", NORMAL, __FILENAME__, __LINE__);
     }
